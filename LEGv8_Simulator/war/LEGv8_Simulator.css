@@ -1,0 +1,205 @@
+/** Add css rules here for your application. */
+
+h1 {
+	font-family: Gill Sans,Gill Sans MT,Calibri,sans-serif;
+	font-size: 42px;
+	font-style: normal;
+	font-variant: normal;
+	color: #128BAB;
+	font-weight: 1000;
+	line-height: 0px;
+  	text-align: center;
+}
+
+.registerPanel {
+    padding-left: 0px;
+    padding-right: 5px;
+    padding-top: 10px;
+    padding-bottom: 0px;
+}
+
+.editorPanel {
+    padding-left: 0px;
+    padding-right: 5px;
+    padding-top: 10px;
+    padding-bottom: 0px;
+}
+
+.datapathPanel {
+	padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 10px;
+    padding-bottom: 0px;
+}
+
+button.gwt-Button:disabled:hover {
+	padding-left: 10px;
+    padding-right: 10px;
+  	border: 0;
+  	background:  #128BAB; 
+  	color:	#262626;
+}
+
+button.gwt-Button:disabled {
+	padding-left: 10px;
+    padding-right: 10px;
+  	border: 0;
+  	background:  #128BAB; 
+  	color:	#262626;
+}
+
+button.gwt-Button:hover {
+	padding-left: 10px;
+    padding-right: 10px;
+  	border: 0;
+  	background:  #FFFFFF; 
+  	color:	#128BAB;
+}
+
+button.gwt-Button {
+	padding-left: 10px;
+    padding-right: 10px;
+	background:  #128BAB; 
+	font-family: Gill Sans,Gill Sans MT,Calibri,sans-serif;
+	font-size: 22px;
+	font-style: normal;
+	font-variant: normal;
+	color:	#FFFFFF;
+	font-weight: 20;
+	line-height: 5px;
+  	text-align: center;
+  	border: 0;
+}
+
+.active {
+	background:	#128BAB;
+	font-family: Gill Sans,Gill Sans MT,Calibri,sans-serif;
+	font-size: 14px;
+	color:	#FFFFFF;
+	text-align: center;
+	border: 0;
+}
+
+.inactive {
+	background: #262626;
+	font-family: Gill Sans,Gill Sans MT,Calibri,sans-serif;
+	font-size: 14px;
+	color:	#FFFFFF;
+	text-align: center;
+	border: 0;
+}
+
+.controlPanel {
+   background-color: #128BAB; 
+}
+
+.controlLabel {
+    padding-right: 10px;
+	background:  #128BAB; 
+	font-family: Gill Sans,Gill Sans MT,Calibri,sans-serif;
+	font-size: 22px;
+	font-style: normal;
+	font-variant: normal;
+	color:	#FFFFFF;
+	font-weight: 20;
+	line-height: 10px;
+  	text-align: center;
+  	border: 0;
+}
+
+.title1Label{
+	font-size: 16px;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.title2Label{
+	font-size: 16px;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.title3Label{
+	font-size: 16px;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+
+.arithLabel{
+	font-size: 16px;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.dataLabel{
+	font-size: 16px;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.logicalLabel{
+	font-size: 16px;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.condBLabel{
+	font-size: 16px;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.uncondBLabel{
+	font-size: 16px;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.condCodesLabel{
+	font-size: 16px;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.moreInfo{
+	font-size: 16px;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.note1{
+	color: #00FF00;
+	text-decoration: underline;
+}
+
+.endLabel{
+	font-size: 16px;
+	color: #128BAB
+}
+
+.dropdownBox {
+	background:  #FFFFFF;
+	font-family: Gill Sans,Gill Sans MT,Calibri,sans-serif;
+	font-size: 18px;
+	font-style: normal;
+	font-variant: normal;
+	color:	#128BAB; 
+	font-weight: 20;
+	line-height: 10px;
+  	text-align: center;
+  	border: 0;
+}
+
+.pcReg {
+	padding-bottom: 5px;
+	padding-right: 10px
+}
+
+.cpsrReg {
+	padding-bottom: 5px;
+}
+
+.individualReg {
+	 padding-right: 10px;
+}
