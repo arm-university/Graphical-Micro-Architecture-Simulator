@@ -14,7 +14,7 @@ LEGv8 ISA Simulator is a web browser-based simulator for a subset of the Armv8-A
 
 * Cross-platform, no installation required.
 * Contains a code editor, with a visible and interactive register file.
-* Shows visual datapaths similar to those in the **Computer Organization and Design (Arm Edition**) textbook by David A. Patterson, John L, Hennessy. 
+* Shows visual datapaths similar to those in the **Computer Organization and Design (Arm Edition**) textbook by David A. Patterson & John L. Hennessy. 
 * Execution mode:
     * Has ability to step through execution of instructions.
     * Provides expected results (register contents, flags).
