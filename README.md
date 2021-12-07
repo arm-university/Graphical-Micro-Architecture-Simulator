@@ -5,7 +5,7 @@ Welcome to our Graphical-Micro-Architecture-Simulator (BETA version)!
 
 ### [Download the simulator here](https://github.com/arm-university/Graphical-Micro-Architecture-Simulator/archive/refs/heads/main.zip)
 
-The Graphical Micro-Architecture Simulator is a web browser-based simulator for a subset of the Armv8-A instructions, specifically LEGv8, which is based on the Computer Organization and Design (Arm Edition) textbook by David A. Patterson & John L. Hennessy. This simulator can be run locally on a PC, and is offered exclusively and at no cost to academics, teaching staff, and learners worldwide. 
+The Graphical Micro-Architecture Simulator is a web browser-based simulator for a subset of the Arm instructions. Specifically, this tool provides the expected execution results for the LEGv8 instructions, which is a subset of Armv8-A instructions based on the Computer Organization and Design (Arm Edition) textbook by David A. Patterson & John L. Hennessy. This simulator can be run locally on a PC, and is offered exclusively and at no cost to academics, teaching staff, and learners worldwide. 
 
 **Note: This tool is currently a BETA version.**
 
@@ -27,7 +27,7 @@ The Graphical Micro-Architecture Simulator is a web browser-based simulator for 
 ## Purpose of the Simulator
 To produce learners who can program using Arm instructions and describe the corresponding datapaths involved in a single-cycle or a pipelined CPU. The simulator also provide error messages/feedback for learning purposes. 
 
-**This tool is currently a BETA version. If there are any issues, please read the Reporting Bugs section in [here.]**(https://github.com/arm-university/Graphical-Micro-Architecture-Simulator/blob/main/Contributions_and_Modifications/Contributions_And_Modifications.md)
+**This tool is currently a BETA version. If there are any issues, please read the Reporting Bugs section in [here.](https://github.com/arm-university/Graphical-Micro-Architecture-Simulator/blob/main/Contributions_and_Modifications/Contributions_And_Modifications.md)**
 
 ## How to Use
 Either clone this repository or [download the simulator here.](https://github.com/arm-university/Graphical-Micro-Architecture-Simulator/archive/refs/heads/main.zip)
@@ -41,7 +41,7 @@ Either clone this repository or [download the simulator here.](https://github.co
 You are free to fork or clone this material. See [LICENSE.md](https://github.com/arm-university/Graphical-Micro-Architecture-Simulator/blob/main/License/LICENSE.md) for the complete license.
 
 ## Modifications and Contributions
-We welcome any bug fixes, modifications, and contributions to this tool. For more information, please click [here.]**(https://github.com/arm-university/Graphical-Micro-Architecture-Simulator/tree/main/Contributions_and_Modifications)
+We welcome any bug fixes, modifications, and contributions to this tool. For more information, please click [here.](https://github.com/arm-university/Graphical-Micro-Architecture-Simulator/tree/main/Contributions_and_Modifications)
 
 ## Inclusive Language Commitment
 Arm is committed to making the language we use inclusive, meaningful, and respectful. Our goal is to remove and replace non-inclusive language from our vocabulary to reflect our values and represent our global ecosystem.
