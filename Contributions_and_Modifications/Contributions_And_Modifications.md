@@ -24,7 +24,7 @@ Pull requests on GitHub have to meet the following requirements to keep the code
 If commits do not follow the above guidelines, we may request that you modify the commit history (often to add more details to address what and why rather than how).
 
 ### AUP maintainers
-The maintainers are a small group of Arm engineers who work in consultation with Academic SMEs. Their primary role is to progress contributions, both internal and external, from the initial pull request state through to released code.
+The maintainers are a small group of Arm engineers. Their primary role is to progress contributions, both internal and external, from the initial pull request state through to released code.
 
 Responsibilities:
 
