@@ -14,7 +14,7 @@ The Graphical Micro-Architecture Simulator is a web browser-based simulator for 
 
 * Cross-platform, no installation required.
 * Contains a code editor, with a visible and interactive register file.
-* Shows visual datapaths similar to those in the **Computer Organization and Design (Arm Edition**) textbook by David A. Patterson & John L. Hennessy. 
+* Shows visual datapaths similar to those in the [Computer Organization and Design (Arm Edition)](https://www.elsevier.com/books/computer-organization-and-design-arm-edition/patterson/978-0-12-801733-3) textbook by David A. Patterson & John L. Hennessy. 
 * Execution mode:
     * Has ability to step through execution of instructions.
     * Provides expected results (register contents, flags).
@@ -25,7 +25,11 @@ The Graphical Micro-Architecture Simulator is a web browser-based simulator for 
 
 
 ## Purpose of the Simulator
-To produce learners who can program using Arm instructions and describe the corresponding datapaths involved in a single-cycle or a pipelined CPU. The simulator also provide error messages/feedback for learning purposes. 
+To produce learners who can program using Arm instructions and describe the corresponding datapaths involved in a single-cycle or a pipelined CPU. The simulator also provides error messages/feedback for learning purposes. 
+
+A fundamental understanding of an Instruction Set Architecture (ISA) is a crucial skill for all aspiring hardware designers and developers. The ISA acts as the interface between hardware and software, specifying what the instruction set can do and how the processor makes use of those instructions - helping developers write more efficient code.
+
+Sometimes, however, students stuggle to understand how the ISA executes complex commands, for instance for the CPU, databus, memory and I/O. This simulator simplifies this interaction by allowing students to visualize the instruction execution, establishing a clear link between the inner architecture of a microprocessor and the instructions required to efficiently execute commands on the hardware.
 
 **This tool is currently a BETA version. If there are any issues, please read the Reporting Bugs section in [here.](https://github.com/arm-university/Graphical-Micro-Architecture-Simulator/blob/main/Contributions_and_Modifications/Contributions_And_Modifications.md)**
 
