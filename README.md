@@ -40,12 +40,11 @@ Either clone this repository or [download the simulator here.](https://github.co
 1.	Navigate to `/LEGv8_Simulator/war` directory and open `LEGv8_Simulator` using a web browser. 
 2.	Click the **Help** tab on the top right of the simulator, which contains further documentation on usage. 
 
+## Modifications and Contributions
+We welcome any bug fixes, modifications, and contributions to this tool. For more information, please click [here.](https://github.com/arm-university/Graphical-Micro-Architecture-Simulator/tree/main/Contributions_and_Modifications)
 
 ## License
 You are free to fork or clone this material. See [LICENSE.md](https://github.com/arm-university/Graphical-Micro-Architecture-Simulator/blob/main/License/LICENSE.md) for the complete license.
-
-## Modifications and Contributions
-We welcome any bug fixes, modifications, and contributions to this tool. For more information, please click [here.](https://github.com/arm-university/Graphical-Micro-Architecture-Simulator/tree/main/Contributions_and_Modifications)
 
 ## Inclusive Language Commitment
 Arm is committed to making the language we use inclusive, meaningful, and respectful. Our goal is to remove and replace non-inclusive language from our vocabulary to reflect our values and represent our global ecosystem.
