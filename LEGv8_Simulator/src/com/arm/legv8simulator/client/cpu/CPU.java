@@ -222,24 +222,33 @@ public class CPU {
 		Vflag = set;
 	}
 	
-	private void setVflag(long result, long op1, long op2) {
-		Vflag = (((op1^~op2) & (op1^result)) & (1<<63)) != 0;
+	private void setVflagAdd(long result, long op1, long op2) {
+		Vflag = (((op1^~op2) & (op1^result)) & (1L<<63)) != 0;
 	}
-	
+
+	private void setVflagSub(long result, long op1, long op2) {
+		Vflag = (((op1^op2) & (op1^result)) & (1L<<63)) != 0;
+	}
+
 	// returns most significant bit of value passed in
 	private long MSB(long value) {
 		return value >>> 63;
 	}
-	
-	private void ADDSetFlags(long result, long op1, long op2) {
+
+	private void commonSetFlags(long result, long op1, long op2) {
 		setNflag(result < 0);
 		setZflag(result == 0);
 		setCflag(result, op1, op2);
-		setVflag(result, op1, op2);
+	}
+
+	private void ADDSetFlags(long result, long op1, long op2) {
+		commonSetFlags(result, op1, op2);
+		setVflagAdd(result, op1, op2);
 	}
 	
 	private void SUBSetFlags(long result, long op1, long op2) {
-		ADDSetFlags(result, op1, op2);
+		commonSetFlags(result, op1, op2);
+		setVflagSub(result, op1, op2);
 	}
 	
 	private void ANDSetFlags(long result) {
@@ -436,13 +445,13 @@ public class CPU {
 
 	private void ADDS(int destReg, int op1Reg, int op2Reg) {
 		long result = registerFile[op1Reg] + registerFile[op2Reg];
+		ADDSetFlags(result, registerFile[op1Reg], registerFile[op2Reg]);
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
 			registerFile[destReg] = result;
 			cpuLog.append("ADDS \t X" + destReg + ", X" + op1Reg + ", X" + op2Reg + "\n");
 		}
-		ADDSetFlags(result, registerFile[op1Reg], registerFile[op2Reg]);
 		cpuLog.append("Set flags + \n");
 	}
 
@@ -457,13 +466,13 @@ public class CPU {
 
 	private void ADDIS(int destReg, int op1Reg, int op2Imm) {
 		long result = registerFile[op1Reg] + op2Imm;
+		ADDSetFlags(result, registerFile[op1Reg], op2Imm);
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
 			registerFile[destReg] = result;
 			cpuLog.append("ADDIS \t X" + destReg + ", X" + op1Reg + ", #" + op2Imm + "\n");
 		}
-		ADDSetFlags(result, registerFile[op1Reg], op2Imm);
 		cpuLog.append("Set flags + \n");
 	}
 
@@ -478,13 +487,13 @@ public class CPU {
 
 	private void SUBS(int destReg, int op1Reg, int op2Reg) {
 		long result = registerFile[op1Reg] - registerFile[op2Reg];
+		SUBSetFlags(result, registerFile[op1Reg], registerFile[op2Reg]);
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
 			registerFile[destReg] = result;
 			cpuLog.append("SUBS \t X" + destReg + ", X" + op1Reg + ", X" + op2Reg + "\n");
 		}
-		SUBSetFlags(result, registerFile[op1Reg], registerFile[op2Reg]);
 		cpuLog.append("Set flags + \n");
 	}
 
@@ -499,13 +508,13 @@ public class CPU {
 
 	private void SUBIS(int destReg, int op1Reg, int op2Imm) {
 		long result = registerFile[op1Reg] - op2Imm;
+		SUBSetFlags(result, registerFile[op1Reg], op2Imm);
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
 			registerFile[destReg] = result;
 			cpuLog.append("SUBIS \t X" + destReg + ", X" + op1Reg + ", #" + op2Imm + "\n");
 		}
-		SUBSetFlags(result, registerFile[op1Reg], op2Imm);
 		cpuLog.append("Set flags + \n");
 	}
 
