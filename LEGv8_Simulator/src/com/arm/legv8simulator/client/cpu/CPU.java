@@ -874,8 +874,8 @@ public class CPU {
 	}
 
 	private void BL(int branchIndex) {
-		instructionIndex = branchIndex;
 		registerFile[LR] = instructionIndex * INSTRUCTION_SIZE + Memory.TEXT_SEGMENT_OFFSET;
+		instructionIndex = branchIndex;
 		cpuLog.append("BL \t" + "0x" + Long.toHexString(registerFile[LR]) + " \n");
 	}
 
