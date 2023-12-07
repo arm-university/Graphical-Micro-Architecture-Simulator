@@ -239,7 +239,11 @@ public class CPU {
 	}
 	
 	private void SUBSetFlags(long result, long op1, long op2) {
-		ADDSetFlags(result, op1, (~(op2)+1));
+		//ADDSetFlags(result, op1, op2);
+		ADDSetFlags(result, op1, (~op2)+1);		// setting flags for the SUBS operation 
+												// is equivalent to setting flags for
+												// the ADDS operation given that we
+												// 2-complement the second operand
 	}
 	
 	private void ANDSetFlags(long result) {
@@ -285,6 +289,12 @@ public class CPU {
 			break;
 		case ADDIS :
 			ADDIS(args[0], args[1], args[2]);
+			break;
+		case MUL :
+			MUL(args[0], args[1], args[2]);
+			break;
+		case MULI :
+			MULI(args[0], args[1], args[2]);
 			break;
 		case SUB :
 			SUB(args[0], args[1], args[2]);
@@ -465,6 +475,24 @@ public class CPU {
 		}
 		ADDSetFlags(result, registerFile[op1Reg], op2Imm);
 		cpuLog.append("Set flags + \n");
+	}
+	
+	private void MUL(int destReg, int op1Reg, int op2Reg) {
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			registerFile[destReg] = registerFile[op1Reg] * registerFile[op2Reg];
+			cpuLog.append("MUL \t X" + destReg + ", X" + op1Reg + ", X" + op2Reg + "\n");
+		}
+	}
+	
+	private void MULI(int destReg, int op1Reg, int op2Imm) {
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			registerFile[destReg] = registerFile[op1Reg] * op2Imm;
+			cpuLog.append("MULI \t X" + destReg + ", X" + op1Reg + ", #" + op2Imm + "\n");
+		}
 	}
 
 	private void SUB(int destReg, int op1Reg, int op2Reg) {

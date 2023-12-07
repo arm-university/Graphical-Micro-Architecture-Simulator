@@ -12,7 +12,9 @@ public enum Mnemonic {
 	ADD("ADD", "add", TokenType.MNEMONIC_RRR, "10001011000", "0010"),
 	ADDS("ADDS", "adds", TokenType.MNEMONIC_RRR, "10101011000", "0010"),
 	ADDI("ADDI", "addi", TokenType.MNEMONIC_RRI, "1001000100", "0010"),
-	ADDIS("ADDIS", "addis", TokenType.MNEMONIC_RRI, "1011000100", "0010"),
+	ADDIS("ADDIS", "addis", TokenType.MNEMONIC_RRI, "1011000111", "0010"),
+	MUL("MUL", "mul", TokenType.MNEMONIC_RRR, "10011011000", "0010"),
+	MULI("MULI", "muli", TokenType.MNEMONIC_RRI, "10011011000", "0010"),	// MULI doesn't exist in LEGv8, giving same opcode and ALU of MUL
 	SUB("SUB", "sub", TokenType.MNEMONIC_RRR, "11001011000", "0110"),
 	SUBS("SUBS", "subs", TokenType.MNEMONIC_RRR, "11101011000", "0110"),
 	SUBI("SUBI", "subi", TokenType.MNEMONIC_RRI, "1101000100", "0110"),

@@ -55,6 +55,10 @@ public class Decoder {
 			return new Instruction(mnemonic, decodeRRIArithmeticArgs(args), lineNumber, ControlUnitConfiguration.RRI);
 		case ADDIS :
 			return new Instruction(mnemonic, decodeRRIArithmeticArgs(args), lineNumber, ControlUnitConfiguration.RRI_FLAGS);
+		case MUL :
+			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
+		case MULI :
+			return new Instruction(mnemonic, decodeRRILogicalArgs(args), lineNumber, ControlUnitConfiguration.RRI);
 		case SUB :
 			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
 		case SUBS :
