@@ -239,7 +239,7 @@ public class CPU {
 	}
 	
 	private void SUBSetFlags(long result, long op1, long op2) {
-		ADDSetFlags(result, op1, op2);
+		ADDSetFlags(result, op1, (~(op2)+1));
 	}
 	
 	private void ANDSetFlags(long result) {
