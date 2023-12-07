@@ -239,11 +239,7 @@ public class CPU {
 	}
 	
 	private void SUBSetFlags(long result, long op1, long op2) {
-		//ADDSetFlags(result, op1, op2);
-		ADDSetFlags(result, op1, (~op2)+1);		// setting flags for the SUBS operation 
-												// is equivalent to setting flags for
-												// the ADDS operation given that we
-												// 2-complement the second operand
+		ADDSetFlags(result, op1, (~op2)+1);
 	}
 	
 	private void ANDSetFlags(long result) {
