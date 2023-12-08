@@ -4,7 +4,7 @@
   so that your app can take advantage of the latest GWT module capabilities.
 -->
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.7.0//EN"
-  "http://gwtproject.org/doctype/2.7.0/gwt-module.dtd">
+  "C:/Users/SIMONE/Downloads/LEGv8 Simulator Resources/ProjectDTD.dtd">
 <module rename-to='legv8_simulator'>
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>
@@ -12,10 +12,10 @@
   <!-- Inherit the default GWT style sheet.  You can change       -->
   <!-- the theme of your GWT application by uncommenting          -->
   <!-- any one of the following lines.                            -->
-  <inherits name='com.google.gwt.user.theme.clean.Clean'/>
-  <!-- <inherits name='com.google.gwt.user.theme.standard.Standard'/> -->
+  <!-- <inherits name='com.google.gwt.user.theme.clean.Clean'/> -->
+  <inherits name='com.google.gwt.user.theme.standard.Standard'/>
   <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
-  <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
+  <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/> -->
 
   <!-- Other module inherits                                      -->
 

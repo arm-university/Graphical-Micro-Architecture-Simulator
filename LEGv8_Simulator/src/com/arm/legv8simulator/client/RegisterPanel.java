@@ -24,7 +24,7 @@ public class RegisterPanel extends HorizontalPanel {
 		this.setHeight("20px");
 		this.setWidth("250px");
 		if (reg == CPU.SP) {
-			regValue = 0x7ffffffffcL;
+			regValue = 0x7fffffff80L;	// quadword aligned stack base to avoid manual adjustment every time (could break something, only done for convenience), SIMONE.DEIANA@studenti.units.it
 		} else if (reg == -1) {
 			regValue = 0x400000;
 		} else {
@@ -117,7 +117,7 @@ public class RegisterPanel extends HorizontalPanel {
 	 */
 	public void reset(int reg) {
 		if (reg == 28) {
-			regValue = Long.decode("0x7ffffffffc");
+			regValue = Long.decode("0x7fffffff80"); // quadword aligned stack base to avoid manual adjustment every time (could break something, only done for convenience), SIMONE.DEIANA@studenti.units.it
 		} else if (reg == -1) {
 			regValue = Long.decode("0x400000");
 		} else {

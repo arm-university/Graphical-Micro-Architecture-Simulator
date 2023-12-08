@@ -22,7 +22,7 @@ import java.util.HashMap;
  */
 public class Memory {
 	
-	public static final long STACK_BASE = 0x7ffffffffcL;
+	public static final long STACK_BASE = 0x7fffffff80L;					// quadword aligned stack base to avoid manual adjustment every time (could break something, only done for convenience), SIMONE.DEIANA@studenti.units.it
 	public static final long DYNAMIC_DATA_SEGMENT_OFFSET = 0x10000000L;
 	public static final long TEXT_SEGMENT_OFFSET = 0x400000L;
 	public static final int DOUBLEWORD_SIZE = 8;

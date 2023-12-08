@@ -294,6 +294,7 @@ public class WebApp implements EntryPoint {
 					+ "In these roles they are labelled IP1, IP2, SP, FP, and LR respectively. These registers should only be referred to by their special "
 					+ "names when they are being used to store addresses; the special name implies accessing the register as a 64-bit entity. In order to "
 					+ "access the memory using an instruction, you must be aware that the Dynamic memory offset is 0x10000000 and the Stack base is 0x7ffffffffc. "
+					+ " ( now the Stack base is 0x7fffffff80 which is quadword aligned, if it breaks something let me know ) " // quadword aligned stack base to avoid manual adjustment every time (could break something, only done for convenience), SIMONE.DEIANA@studenti.units.it
 					+ "Thus you should store the value ' 0x10000000' into a register e.g X7 and use this register as the memory base. So memory access is Mem[X7 + 40].");
 			Label line4 = new Label("Arithmetics instructions");
 			line4.addStyleName("arithLabel");

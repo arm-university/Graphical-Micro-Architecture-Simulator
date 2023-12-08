@@ -239,7 +239,7 @@ public class CPU {
 	}
 	
 	private void SUBSetFlags(long result, long op1, long op2) {
-		ADDSetFlags(result, op1, (~op2)+1);
+		ADDSetFlags(result, op1, (~op2)+1);											// fixed behaviour of the function, SIMONE.DEIANA@studenti.units.it
 	}
 	
 	private void ANDSetFlags(long result) {
@@ -286,10 +286,10 @@ public class CPU {
 		case ADDIS :
 			ADDIS(args[0], args[1], args[2]);
 			break;
-		case MUL :
+		case MUL :																		// added MUL execution, SIMONE.DEIANA@studenti.units.it
 			MUL(args[0], args[1], args[2]);
 			break;
-		case MULI :
+		case MULI :																		// added MULI execution, SIMONE.DEIANA@studenti.units.it
 			MULI(args[0], args[1], args[2]);
 			break;
 		case SUB :
@@ -473,7 +473,7 @@ public class CPU {
 		cpuLog.append("Set flags + \n");
 	}
 	
-	private void MUL(int destReg, int op1Reg, int op2Reg) {
+	private void MUL(int destReg, int op1Reg, int op2Reg) {											// added MUL execution, SIMONE.DEIANA@studenti.units.it
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
@@ -482,7 +482,7 @@ public class CPU {
 		}
 	}
 	
-	private void MULI(int destReg, int op1Reg, int op2Imm) {
+	private void MULI(int destReg, int op1Reg, int op2Imm) {										// added MULI execution, SIMONE.DEIANA@studenti.units.it
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
