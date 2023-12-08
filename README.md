@@ -1,9 +1,14 @@
 
 # Graphical-Micro-Architecture-Simulator
 
-Welcome to our Graphical-Micro-Architecture-Simulator (BETA version)!
+## What has been added to this forked version
 
-### [Download the simulator here](https://github.com/arm-university/Graphical-Micro-Architecture-Simulator/archive/refs/heads/main.zip)
+* Fixed the behaviour of the BL instruction, branch and links work correctly now
+* Fixed the behaviour of the SUBS instructions, compares and conditional branches seem to work correctly now
+* Added the MUL instruction following the Patterson specification
+* Added the MULI instruction
+
+This effort has been made in the context of the **_Digital Systems Architectures_** course held at the **_Department of Engineering and Architecture_** at the **_[University of Trieste](https://www.units.it/en)_** under the guidance of _**Prof. Alberto Carini**_ . 
 
 The Graphical Micro-Architecture Simulator is a web browser-based simulator for a subset of the Arm instructions. Specifically, this tool provides the expected execution results for the LEGv8 instructions, which is a subset of Arm®v8-A instructions based on the [Computer Organization and Design (Arm Edition)](https://www.elsevier.com/books/computer-organization-and-design-arm-edition/patterson/978-0-12-801733-3) textbook by David A. Patterson & John L. Hennessy. This simulator can be run locally on a PC, and is offered exclusively and at no cost to academics, teaching staff, and learners worldwide. 
 
