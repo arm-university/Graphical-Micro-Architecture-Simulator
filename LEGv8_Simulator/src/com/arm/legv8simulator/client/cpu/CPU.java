@@ -289,9 +289,6 @@ public class CPU {
 		case MUL :																		// added MUL execution, SIMONE.DEIANA@studenti.units.it
 			MUL(args[0], args[1], args[2]);
 			break;
-		case MULI :																		// added MULI execution, SIMONE.DEIANA@studenti.units.it
-			MULI(args[0], args[1], args[2]);
-			break;
 		case SUB :
 			SUB(args[0], args[1], args[2]);
 			break;
@@ -479,15 +476,6 @@ public class CPU {
 		} else {
 			registerFile[destReg] = registerFile[op1Reg] * registerFile[op2Reg];
 			cpuLog.append("MUL \t X" + destReg + ", X" + op1Reg + ", X" + op2Reg + "\n");
-		}
-	}
-	
-	private void MULI(int destReg, int op1Reg, int op2Imm) {										// added MULI execution, SIMONE.DEIANA@studenti.units.it
-		if (destReg == XZR) {
-			cpuLog.append("Ignored attempted assignment to XZR. \n");
-		} else {
-			registerFile[destReg] = registerFile[op1Reg] * op2Imm;
-			cpuLog.append("MULI \t X" + destReg + ", X" + op1Reg + ", #" + op2Imm + "\n");
 		}
 	}
 
@@ -825,7 +813,7 @@ public class CPU {
 	}
 
 	private void BLT(int branchIndex) {
-		if (Cflag != Vflag) {
+		if (Nflag != Vflag) {														// fixed jump condition acarini@units.it
 			instructionIndex = branchIndex;
 		}
 		cpuLog.append("B.LT \t" + "0x" + Long.toHexString(getPC()) + " \n");

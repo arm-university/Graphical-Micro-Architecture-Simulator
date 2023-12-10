@@ -14,7 +14,6 @@ public enum Mnemonic {
 	ADDI("ADDI", "addi", TokenType.MNEMONIC_RRI, "1001000100", "0010"),
 	ADDIS("ADDIS", "addis", TokenType.MNEMONIC_RRI, "1011000111", "0010"),
 	MUL("MUL", "mul", TokenType.MNEMONIC_RRR, "10011011000", "0010"),		// added MUL mnemonic, SIMONE.DEIANA@studenti.units.it
-	MULI("MULI", "muli", TokenType.MNEMONIC_RRI, "10011011000", "0010"),	// added MULI mnemonic, SIMONE.DEIANA@studenti.units.it
 	SUB("SUB", "sub", TokenType.MNEMONIC_RRR, "11001011000", "0110"),
 	SUBS("SUBS", "subs", TokenType.MNEMONIC_RRR, "11101011000", "0110"),
 	SUBI("SUBI", "subi", TokenType.MNEMONIC_RRI, "1101000100", "0110"),

@@ -23,7 +23,7 @@ public enum TokenType {
 	MNEMONIC_RISI("MOV[ZK][ \t]+|mov[zk][ \t]+", 7, "MNEMONIC"),
 	MNEMONIC_RI("CMPI[ \t]+|cmpi[ \t]+", 8, "MNEMONIC"),
 	MNEMONIC_RR("CMP[ \t]+|MOV[ \t]+|cmp[ \t]+|mov[ \t]+", 9, "MNEMONIC"),
-	MNEMONIC_RRI("ADDIS?[ \t]+|SUBIS?[ \t]+|ANDIS?[ \t]+|MULI[ \t]+|ORRI[ \t]+|EORI[ \t]+|LS[LR][ \t]+|addis?[ \t]+|subis?[ \t]+|andis?[ \t]+|muli[ \t]+|orri[ \t]+|eori[ \t]+|ls[lr][ \t]+", 10, "MNEMONIC"),	// added MULI to the parsing, SIMONE.DEIANA@studenti.units.it
+	MNEMONIC_RRI("ADDIS?[ \t]+|SUBIS?[ \t]+|ANDIS?[ \t]+|ORRI[ \t]+|EORI[ \t]+|LS[LR][ \t]+|addis?[ \t]+|subis?[ \t]+|andis?[ \t]+|orri[ \t]+|eori[ \t]+|ls[lr][ \t]+", 10, "MNEMONIC"),
 	MNEMONIC_RRR("ADDS?[ \t]+|SUBS?[ \t]+|ANDS?[ \t]+|MUL[ \t]+|ORR[ \t]+|EOR[ \t]+|adds?[ \t]+|subs?[ \t]+|ands?[ \t]+|mul[ \t]+|orr[ \t]+|eor[ \t]+", 11, "MNEMONIC"),										// added MUL to the parsing, SIMONE.DEIANA@studenti.units.it
 	MNEMONIC_RM("LDURSW[ \t]+|LDUR[HB]?[ \t]+|LDXR[ \t]+|STUR[WHB]?[ \t]+|ldursw[ \t]+|ldur[hb]?[ \t]+|ldxr[ \t]+|stur[whb]?[ \t]+", 12, "MNEMONIC"),
 	MNEMONIC_RRM("STXR[ \t]+|stxr[ \t]+", 13, "MNEMONIC"),
