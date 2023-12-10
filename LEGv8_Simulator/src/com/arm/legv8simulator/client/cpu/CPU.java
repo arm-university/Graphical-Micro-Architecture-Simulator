@@ -801,7 +801,7 @@ public class CPU {
 	}
 
 	private void BLT(int branchIndex) {
-		if (Cflag != Vflag) {
+		if (Nflag != Vflag) {
 			instructionIndex = branchIndex;
 		}
 		cpuLog.append("B.LT \t" + "0x" + Long.toHexString(getPC()) + " \n");
