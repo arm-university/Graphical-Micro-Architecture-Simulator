@@ -239,7 +239,7 @@ public class CPU {
 	}
 	
 	private void SUBSetFlags(long result, long op1, long op2) {
-		ADDSetFlags(result, op1, op2);
+		ADDSetFlags(result, op1, (~(op2)+1));
 	}
 	
 	private void ANDSetFlags(long result) {
@@ -801,7 +801,7 @@ public class CPU {
 	}
 
 	private void BLT(int branchIndex) {
-		if (Cflag != Vflag) {
+		if (Nflag != Vflag) {
 			instructionIndex = branchIndex;
 		}
 		cpuLog.append("B.LT \t" + "0x" + Long.toHexString(getPC()) + " \n");
@@ -874,8 +874,8 @@ public class CPU {
 	}
 
 	private void BL(int branchIndex) {
-		instructionIndex = branchIndex;
 		registerFile[LR] = instructionIndex * INSTRUCTION_SIZE + Memory.TEXT_SEGMENT_OFFSET;
+		instructionIndex = branchIndex;
 		cpuLog.append("BL \t" + "0x" + Long.toHexString(registerFile[LR]) + " \n");
 	}
 
