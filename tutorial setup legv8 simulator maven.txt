@@ -1,0 +1,82 @@
+This tutorial is based on Ubuntu 22.04
+
+1. Install Maven 
+
+sudo apt install maven
+
+2. Move to the folder where you wish to create the project
+
+3. Generate a new GWT project using Maven 
+
+mvn archetype:generate -DarchetypeGroupId=net.ltgt.gwt.archetypes -DarchetypeVersion=LATEST -DarchetypeArtifactId=modular-webapp
+
+[su windows mvn archetype:generate -DarchetypeGroupId="net.ltgt.gwt.archetypes" -DarchetypeVersion="LATEST" -DarchetypeArtifactId="modular-webapp"]
+   
+4. Insert these values when asked: 
+
+groupId: com.arm.legv8simulator.client
+artifactId: legv8_simulator
+version: HEAD-SNAPSHOT
+package: com.arm.legv8simulator.client
+module-short-name: legv8_simulator
+
+5. Press Y to confirm
+
+IMPORTANT NOTE! ACEGWT IS THE GWT LIBRARY USED BY THE SIMULATOR TO IMPLEMENT A POWERFUL TEXT EDITOR INSIDE THE WEBSITE. THE SOURCE CODE IS AVAILABLE ON GITHUB (https://github.com/daveho/AceGWT)
+
+6. create a folder called local-maven-repo-client inside of legv8_simulator/legv8_simulator-client
+
+7. clone somewhere the AceGWT repository  https://github.com/daveho/AceGWT and move to the AceGWT/AceGWT/ folder 
+
+7bis. if you clone from https://github.com/simdeistud/AceGWT-Maven-LEGV8SIM.git or if you obtain the AceGWT repository locally from the professor's website you can skip step 8
+
+8. edit the pom.xml file by changing:
+
+<gwt.version>2.8.2</gwt.version> to <gwt.version>2.11.0</gwt.version>
+
+and every time you encounter com.google.gwt change it to org.gwtproject
+
+9. in the same folder run the following command to build the .jar file that will be imported as a depencency
+
+mvn clean gwt:generate-module compile gwt:package-lib
+
+10. move to the target folder and copy the acegwt-1.3.3.jar file and acegwt-1.3.3 folder to the local-maven-repo folder you created
+
+11. Open legv8_simulator/legv8_simulator-client/pom.xml and add the following lines under the <dependencies> tag among all the other dependencies. This step adds the AceGWT library as a local depencency which is needed to create the text editor used on the website to write the code.
+
+<dependency>
+      <groupId>edu.ycp.cs.dh</groupId>
+      <artifactId>acegwt</artifactId>
+      <version>1.3.3</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/local-maven-repo-client/acegwt-1.3.3.jar</systemPath>
+</dependency>
+
+12... aggiungere legv8simulator code + risorse css etc.
+
+13. TUTORIAL INTELLIJ
+installare intellij ultimate (quello normale non va bene)
+installare il plugin gwt
+creare un nuovo progetto importandolo da legv8_simulator
+
+14. TUTORIAL ECLIPSE
+installare eclipse for java (no jee!) versione precedente a 2023-12
+
+windows: https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2023-09/R/eclipse-java-2023-09-R-win32-x86_64.zip
+
+linux x86: https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2023-09/R/eclipse-java-2023-09-R-linux-gtk-x86_64.tar.gz
+
+linux arm: https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2023-09/R/eclipse-java-2023-09-R-linux-gtk-aarch64.tar.gz
+
+macos x86: https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2023-09/R/eclipse-java-2023-09-R-macosx-cocoa-x86_64.dmg
+
+macos arm: https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2023-09/R/eclipse-java-2023-09-R-macosx-cocoa-aarch64.dmg
+
+(((( https://github.com/gwt-plugins/gwt-eclipse-plugin/issues/474 fare git clone da qualche parte di git clone -b eclipse-2023-12 --single-branch https://github.com/keinhaar/gwt-eclipse-plugin.git (questo passaggio è necessario perché delle versioni recenti di Eclipse hanno cambiato una dipendenza e non sono in grado di installare il plugin dallo store)
+entrare in gwt-eclipse-plugin ed eseguire mvn verify con jdk 17 o superiore))))
+
+seguire questo tutorial per installare il plugin gwt per eclipse (provare tutti i casi se il primo va storto!): https://gwt-plugins.github.io/documentation/gwt-eclipse-plugin/Download.html
+
+
+
+
