@@ -1,5 +1,6 @@
 package com.arm.legv8simulator.client.memory;
 
+
 /**
  * <code>ByteBuffer</code> is a byte buffer of client specified length, used to store data in 
  * big-endian format. Data - <code>bytes</code>, <code>ints</code> and <code>longs</code> - 
@@ -7,12 +8,15 @@ package com.arm.legv8simulator.client.memory;
  * performed so attempting to read or write from an index outside the buffer will result in 
  * a <code>NullPointerException</code>.   
  * <p>
- * This class has been written because java.nio.ByteBuffer is not supported by GWT.
+ * This class has been written because java.nio.ByteBuffer and java.io.DataInputStream is not supported by GWT.
  * 
  * @author Jonathan Wright, 2016
  */
 
-public class ByteBuffer {
+class ByteBuffer {
+	
+	private byte[] buffer;
+
 	
 	/**
 	 * @param capacity	the number of bytes in this ByteBuffer 
@@ -25,7 +29,7 @@ public class ByteBuffer {
 	 * @param index	the location to insert data in this ByteBuffer
 	 * @param value	the byte to be inserted into the ByteBuffer  
 	 */
-	public void put(int index, byte value) {
+	public void putByte(int index, byte value) {
 		buffer[index] = value;
 	}
 	
@@ -33,7 +37,7 @@ public class ByteBuffer {
 	 * @param index	the location to retrieve data
 	 * @return		the byte at <code>index</code> in this ByteBuffer
 	 */
-	public byte get(int index) {
+	public byte getByte(int index) {
 		return buffer[index];
 	}
 	
@@ -43,7 +47,7 @@ public class ByteBuffer {
 	 * @param index	the location to insert data in this ByteBuffer
 	 * @param value the four bytes to be inserted into the ByteBuffer 
 	 */
-	public void putInt(int index, int value) {
+	public void putWord(int index, int value) {
 		for (int i=index; i<Memory.WORD_SIZE; i++) {
 			buffer[i] = (byte) (value >>> (Memory.WORD_SIZE-1-i)*Memory.BITS_IN_BYTE);
 		}
@@ -55,7 +59,7 @@ public class ByteBuffer {
 	 * @param index the location to retrieve data
 	 * @return		the <code>int</code> formed by concatenating the four bytes starting at <code>index</code> in this ByteBuffer
 	 */
-	public int getInt(int index) {
+	public int getWord(int index) {
 		int result = 0;
 		for (int i=index; i<Memory.WORD_SIZE; i++) {
 			result = result << Memory.BITS_IN_BYTE;
@@ -70,7 +74,7 @@ public class ByteBuffer {
 	 * @param index	the location to insert data in this ByteBuffer
 	 * @param value	the eight bytes to be inserted into the ByteBuffer
 	 */
-	public void putLong(int index, long value) {
+	public void putDoubleWord(int index, long value) {
 		for (int i=index; i<Memory.DOUBLEWORD_SIZE; i++) {
 			buffer[i] = (byte) (value >>> (Memory.DOUBLEWORD_SIZE-1-i)*Memory.BITS_IN_BYTE);
 		}
@@ -82,7 +86,7 @@ public class ByteBuffer {
 	 * @param index	the location to retrieve data
 	 * @return		the <code>long</code> formed by concatenating the eight bytes starting at <code>index</code> in this ByteBuffer
 	 */
-	public long getLong(int index) {
+	public long getDoubleWord(int index) {
 		long result = 0L;
 		for (int i=index; i<Memory.DOUBLEWORD_SIZE; i++) {
 			result = result << Memory.BITS_IN_BYTE;
@@ -91,5 +95,4 @@ public class ByteBuffer {
 		return result;
 	}
 	
-	private byte[] buffer;
 }

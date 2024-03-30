@@ -1,5 +1,6 @@
 package com.arm.legv8simulator.client.cpu;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 import com.arm.legv8simulator.client.Error;
@@ -28,38 +29,53 @@ public class CPU {
 	public static final int INSTRUCTION_SIZE = 4;
 	public static final int NUM_REGISTERS = 32;
 	
-	public static final int XZR = 31;
-	public static final int LR = 30;
-	public static final int FP = 29;
-	public static final int SP = 28;
-	public static final int X27 = 27;
-	public static final int X26 = 26;
-	public static final int X25 = 25;
-	public static final int X24 = 24;
-	public static final int X23 = 23;
-	public static final int X22 = 22;
-	public static final int X21 = 21;
-	public static final int X20 = 20;
-	public static final int X19 = 19;
-	public static final int X18 = 18;
-	public static final int IP1 = 17;
-	public static final int IP0 = 16;
-	public static final int X15 = 15;
-	public static final int X14 = 14;
-	public static final int X13 = 13;
-	public static final int X12 = 12;
-	public static final int X11 = 11;
-	public static final int X10 = 10;
-	public static final int X9 = 9;
-	public static final int X8 = 8;
-	public static final int X7 = 7;
-	public static final int X6 = 6;
-	public static final int X5 = 5;
-	public static final int X4 = 4;
-	public static final int X3 = 3;
-	public static final int X2 = 2;
-	public static final int X1 = 1;
-	public static final int X0 = 0;
+	public static final BigInteger UNSIGNED_LONG_MASK = BigInteger.ONE.shiftLeft(Long.SIZE).subtract(BigInteger.ONE);
+	
+	public static final int XZR = 31, D31 = 31, S31 = 31;
+	public static final int LR = 30, D30 = 30, S30 = 30;
+	public static final int FP = 29, D29 = 29, S29 = 29;
+	public static final int SP = 28, D28 = 28, S28 = 28;
+	public static final int X27 = 27, D27 = 27, S27 = 27;
+	public static final int X26 = 26, D26 = 26, S26 = 26;
+	public static final int X25 = 25, D25 = 25, S25 = 25;
+	public static final int X24 = 24, D24 = 24, S24 = 24;
+	public static final int X23 = 23, D23 = 23, S23 = 23;
+	public static final int X22 = 22, D22 = 22, S22 = 22;
+	public static final int X21 = 21, D21 = 21, S21 = 21;
+	public static final int X20 = 20, D20 = 20, S20 = 20;
+	public static final int X19 = 19, D19 = 19, S19 = 19;
+	public static final int X18 = 18, D18 = 18, S18 = 18;
+	public static final int IP1 = 17, D17 = 17, S17 = 17;
+	public static final int IP0 = 16, D16 = 16, S16 = 16;
+	public static final int X15 = 15, D15 = 15, S15 = 15;
+	public static final int X14 = 14, D14 = 14, S14 = 14;
+	public static final int X13 = 13, D13 = 13, S13 = 13;
+	public static final int X12 = 12, D12 = 12, S12 = 12;
+	public static final int X11 = 11, D11 = 11, S11= 11;
+	public static final int X10 = 10, D10 = 10, S10 = 10;
+	public static final int X9 = 9, D9 = 9, S9 = 9;
+	public static final int X8 = 8, D8 = 8, S8 = 8;
+	public static final int X7 = 7, D7 = 7, S7 = 7;
+	public static final int X6 = 6, D6 = 6, S6 = 6;
+	public static final int X5 = 5, D5 = 5, S5 = 5;
+	public static final int X4 = 4, D4 = 4, S4 = 4;
+	public static final int X3 = 3, D3 = 3, S3 = 3;
+	public static final int X2 = 2, D2 = 2, S2 = 2;
+	public static final int X1 = 1, D1 = 1, S1 = 1;
+	public static final int X0 = 0, D0 = 0, S0 = 0;
+	
+	private boolean branchTaken = false;
+	private boolean STXRSucceed = false;
+	private StringBuilder cpuLog = new StringBuilder("");
+	private Register[]	XRegisterFile;
+	private Register[]	DRegisterFile;
+	private long taggedAddress;
+	private int instructionIndex;
+	private boolean Nflag;
+	private boolean Zflag;
+	private boolean Cflag;
+	private boolean Vflag;
+
 	
 	/**
 	 * Constructs a new <code>CPU</code> object, initialising registers and flags to 0 and false respectively.
@@ -68,15 +84,20 @@ public class CPU {
 	 * @see Memory
 	 */
 	public CPU() {
-		registerFile = new long[NUM_REGISTERS];
-		for (int i=0; i<NUM_REGISTERS; i++) {
-			registerFile[i] = 0L;
-		}
-		registerFile[SP] = Memory.STACK_BASE;
 		Nflag = false;
 		Zflag = false;
 		Cflag = false;
 		Vflag = false;
+		
+		XRegisterFile = new Register[NUM_REGISTERS];
+		for (int i = 0; i < NUM_REGISTERS; i++)
+			XRegisterFile[i] = new Register(RegisterType.X);
+		XRegisterFile[SP].writeDoubleWord(Memory.STACK_BASE);
+		
+		DRegisterFile = new Register[NUM_REGISTERS];
+		for (int i = 0; i < NUM_REGISTERS; i++)
+			DRegisterFile[i] = new Register(RegisterType.D);
+		
 	}
 	
 	/**
@@ -133,8 +154,13 @@ public class CPU {
 	 * @param index	the register whose value to return, an integer in the range 0-31
 	 * @return		the value stored in the register <code>index</code>
 	 */
-	public long getRegister(int index) {
-		return registerFile[index];
+	public long getRegister(RegisterType type, int index) {
+		switch(type) {
+		case X: return XRegisterFile[index].readDoubleWord();
+		case D: return DRegisterFile[index].readDoubleWord();
+		case S: return DRegisterFile[index].readDoubleWord() & 0x00000000ffffffffL;
+		default: return 0L;
+		}
 	}
 	
 	/**
@@ -249,6 +275,13 @@ public class CPU {
 		setVflag(false);
 	}
 	
+	private void FCMPSetFlags(int comparisonResult, boolean isNaN) {
+		setNflag(comparisonResult < 0 && !isNaN);
+		setZflag(comparisonResult == 0 && !isNaN);
+		setCflag(comparisonResult >= 0 || isNaN);
+		setVflag(isNaN);
+	}
+	
 	private void clearExclusiveAccessTag(long address, int figureSize) {
 		if (taggedAddress == 0) return;
 		if ((address >= taggedAddress 
@@ -261,9 +294,9 @@ public class CPU {
 	}
 	
 	private void checkSPAlignment() throws SPAlignmentException {
-		if (registerFile[SP]%16 != 0) {
+		if (XRegisterFile[SP].readDoubleWord()%16 != 0) {
 			cpuLog.append("SP misaligned\n");
-			throw new SPAlignmentException(registerFile[SP]);
+			throw new SPAlignmentException(XRegisterFile[SP].readDoubleWord());
 		}
 		cpuLog.append("SP aligned correctly\n");
 	}
@@ -288,6 +321,18 @@ public class CPU {
 			break;
 		case MUL :																		// added MUL execution, SIMONE.DEIANA@studenti.units.it
 			MUL(args[0], args[1], args[2]);
+			break;
+		case UMULH :																	// added UMULH execution, SIMONE.DEIANA@studenti.units.it
+			UMULH(args[0], args[1], args[2]);
+			break;
+		case SMULH :																	// added SMULH execution, SIMONE.DEIANA@studenti.units.it
+			SMULH(args[0], args[1], args[2]);
+			break;
+		case SDIV :
+			SDIV(args[0], args[1], args[2]);
+			break;
+		case UDIV :
+			UDIV(args[0], args[1], args[2]);
 			break;
 		case SUB :
 			SUB(args[0], args[1], args[2]);
@@ -373,6 +418,9 @@ public class CPU {
 		case CBNZ :
 			CBNZ(args[0], args[1]);
 			break;
+		case LDA:
+			LDA(args[0], args[1]);
+			break;
 		case BEQ :
 			BEQ(args[0]);
 			break;
@@ -424,6 +472,48 @@ public class CPU {
 		case BL :
 			BL(args[0]);
 			break;
+		case FADDS :
+			FADDS(args[0], args[1], args[2]);
+			break;
+		case FADDD :
+			FADDD(args[0], args[1], args[2]);
+			break;
+		case FSUBS :
+			FSUBS(args[0], args[1], args[2]);
+			break;
+		case FSUBD :
+			FSUBD(args[0], args[1], args[2]);
+			break;
+		case FMULS :
+			FMULS(args[0], args[1], args[2]);
+			break;
+		case FMULD :
+			FMULD(args[0], args[1], args[2]);
+			break;
+		case FDIVS :
+			FDIVS(args[0], args[1], args[2]);
+			break;
+		case FDIVD :
+			FDIVD(args[0], args[1], args[2]);
+			break;
+		case FCMPS :
+			FCMPS(args[0], args[1]);
+			break;
+		case FCMPD :
+			FCMPD(args[0], args[1]);
+			break;
+		case STURD :
+			STURD(args[0], args[1], args[2], memory);
+			break;
+		case LDURD :
+			LDURD(args[0], args[1], args[2], memory);
+			break;
+		case STURS :
+			STURS(args[0], args[1], args[2], memory);
+			break;
+		case LDURS :
+			LDURS(args[0], args[1], args[2], memory);
+			break;
 		default : {}
 		}
 	}
@@ -432,20 +522,20 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = registerFile[op1Reg] + registerFile[op2Reg];
+			XRegisterFile[destReg].writeDoubleWord(XRegisterFile[op1Reg].readDoubleWord() + XRegisterFile[op2Reg].readDoubleWord());;
 			cpuLog.append("ADD \t X" + destReg + ", X" + op1Reg + ", X" + op2Reg + "\n");
 		}
 	}
 
 	private void ADDS(int destReg, int op1Reg, int op2Reg) {
-		long result = registerFile[op1Reg] + registerFile[op2Reg];
+		long result = XRegisterFile[op1Reg].readDoubleWord() + XRegisterFile[op2Reg].readDoubleWord();
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = result;
+			XRegisterFile[destReg].writeDoubleWord(result);;
 			cpuLog.append("ADDS \t X" + destReg + ", X" + op1Reg + ", X" + op2Reg + "\n");
 		}
-		ADDSetFlags(result, registerFile[op1Reg], registerFile[op2Reg]);
+		ADDSetFlags(result, XRegisterFile[op1Reg].readDoubleWord(), XRegisterFile[op2Reg].readDoubleWord());
 		cpuLog.append("Set flags + \n");
 	}
 
@@ -453,20 +543,20 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = registerFile[op1Reg] + op2Imm;
+			XRegisterFile[destReg].writeDoubleWord(XRegisterFile[op1Reg].readDoubleWord() + op2Imm);
 			cpuLog.append("ADDI \t X" + destReg + ", X" + op1Reg + ", #" + op2Imm + "\n");
 		}
 	}
 
 	private void ADDIS(int destReg, int op1Reg, int op2Imm) {
-		long result = registerFile[op1Reg] + op2Imm;
+		long result = XRegisterFile[op1Reg].readDoubleWord() + op2Imm;
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = result;
+			XRegisterFile[destReg].writeDoubleWord(result);
 			cpuLog.append("ADDIS \t X" + destReg + ", X" + op1Reg + ", #" + op2Imm + "\n");
 		}
-		ADDSetFlags(result, registerFile[op1Reg], op2Imm);
+		ADDSetFlags(result, XRegisterFile[op1Reg].readDoubleWord(), op2Imm);
 		cpuLog.append("Set flags + \n");
 	}
 	
@@ -474,7 +564,7 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = registerFile[op1Reg] * registerFile[op2Reg];
+			XRegisterFile[destReg].writeDoubleWord(XRegisterFile[op1Reg].readDoubleWord() * XRegisterFile[op2Reg].readDoubleWord());
 			cpuLog.append("MUL \t X" + destReg + ", X" + op1Reg + ", X" + op2Reg + "\n");
 		}
 	}
@@ -483,20 +573,20 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = registerFile[op1Reg] - registerFile[op2Reg];
+			XRegisterFile[destReg].writeDoubleWord(XRegisterFile[op1Reg].readDoubleWord() - XRegisterFile[op2Reg].readDoubleWord());
 			cpuLog.append("SUB \t X" + destReg + ", X" + op1Reg + ", X" + op2Reg + "\n");
 		}
 	}
 
 	private void SUBS(int destReg, int op1Reg, int op2Reg) {
-		long result = registerFile[op1Reg] - registerFile[op2Reg];
+		long result = XRegisterFile[op1Reg].readDoubleWord() - XRegisterFile[op2Reg].readDoubleWord();
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = result;
+			XRegisterFile[destReg].writeDoubleWord(result);
 			cpuLog.append("SUBS \t X" + destReg + ", X" + op1Reg + ", X" + op2Reg + "\n");
 		}
-		SUBSetFlags(result, registerFile[op1Reg], registerFile[op2Reg]);
+		SUBSetFlags(result, XRegisterFile[op1Reg].readDoubleWord(), XRegisterFile[op2Reg].readDoubleWord());
 		cpuLog.append("Set flags + \n");
 	}
 
@@ -504,38 +594,84 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = registerFile[op1Reg] - op2Imm;
+			XRegisterFile[destReg].writeDoubleWord(XRegisterFile[op1Reg].readDoubleWord() - op2Imm);
 			cpuLog.append("SUBI \t X" + destReg + ", X" + op1Reg + ", #" + op2Imm + "\n");
 		}
 	}
 
 	private void SUBIS(int destReg, int op1Reg, int op2Imm) {
-		long result = registerFile[op1Reg] - op2Imm;
+		long result = XRegisterFile[op1Reg].readDoubleWord() - op2Imm;
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = result;
+			XRegisterFile[destReg].writeDoubleWord(result);
 			cpuLog.append("SUBIS \t X" + destReg + ", X" + op1Reg + ", #" + op2Imm + "\n");
 		}
-		SUBSetFlags(result, registerFile[op1Reg], op2Imm);
+		SUBSetFlags(result, XRegisterFile[op1Reg].readDoubleWord(), op2Imm);
 		cpuLog.append("Set flags + \n");
 	}
+	
+	private void SDIV(int destReg, int op1Reg, int op2Reg) {	// added SDIV instruction, SIMONE.DEIANA@studenti.units.it
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			XRegisterFile[destReg].writeDoubleWord(XRegisterFile[op1Reg].readDoubleWord() / XRegisterFile[op2Reg].readDoubleWord());
+			cpuLog.append("SDIV \t X" + destReg + ", X" + op1Reg + ", X" + op2Reg + "\n");
+		}
+	}
+	
+	private void UDIV(int destReg, int op1Reg, int op2Reg) {	// added UDIV instruction, SIMONE.DEIANA@studenti.units.it
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			BigInteger dividend = BigInteger.valueOf(XRegisterFile[op1Reg].readDoubleWord()).and(UNSIGNED_LONG_MASK);
+			BigInteger divisor = BigInteger.valueOf(XRegisterFile[op2Reg].readDoubleWord()).and(UNSIGNED_LONG_MASK);
+			BigInteger quotient = dividend.divide(divisor);
+			XRegisterFile[destReg].writeDoubleWord(quotient.longValue());
+			cpuLog.append("UDIV \t X" + destReg + ", X" + op1Reg + ", X" + op2Reg + "\n");
+		}
+	}
+	
+	
+	
+	private void SMULH(int destReg, int op1Reg, int op2Reg) {	// added SMULH instruction, SIMONE.DEIANA@studenti.units.it
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			BigInteger fullResult = BigInteger.valueOf(XRegisterFile[op1Reg].readDoubleWord()).multiply(BigInteger.valueOf(XRegisterFile[op2Reg].readDoubleWord()));
+			BigInteger shiftedResult = fullResult.bitLength() > 64 ? fullResult.shiftRight(64) : BigInteger.valueOf(0);
+			XRegisterFile[destReg].writeDoubleWord(shiftedResult.longValue());;
+			cpuLog.append("SMULH \t X" + destReg + ", X" + op1Reg + ", X" + op2Reg + "\n");
+		}
+	}
+	
+	private void UMULH(int destReg, int op1Reg, int op2Reg) {	// added UMULH instruction, SIMONE.DEIANA@studenti.units.it
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			BigInteger fullResult = BigInteger.valueOf(XRegisterFile[op1Reg].readDoubleWord()).and(UNSIGNED_LONG_MASK).multiply(BigInteger.valueOf(XRegisterFile[op2Reg].readDoubleWord()).and(UNSIGNED_LONG_MASK));
+			BigInteger shiftedResult = fullResult.bitLength() > 64 ? fullResult.shiftRight(64) : BigInteger.valueOf(0);
+			XRegisterFile[destReg].writeDoubleWord(shiftedResult.longValue());;
+			cpuLog.append("UMULH \t X" + destReg + ", X" + op1Reg + ", X" + op2Reg + "\n");
+		  }
+		}
+
 
 	private void AND(int destReg, int op1Reg, int op2Reg) {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = registerFile[op1Reg] & registerFile[op2Reg];
+			XRegisterFile[destReg].writeDoubleWord(XRegisterFile[op1Reg].readDoubleWord() & XRegisterFile[op2Reg].readDoubleWord());
 			cpuLog.append("AND \t X" + destReg + ", X" + op1Reg + ", X" + op2Reg + "\n");
 		}
 	}
 
 	private void ANDS(int destReg, int op1Reg, int op2Reg) {
-		long result = registerFile[op1Reg] & registerFile[op2Reg];
+		long result = XRegisterFile[op1Reg].readDoubleWord() & XRegisterFile[op2Reg].readDoubleWord();
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = result;
+			XRegisterFile[destReg].writeDoubleWord(result);;
 			cpuLog.append("ANDS \t X" + destReg + ", X" + op1Reg + ", X" + op2Reg + "\n");
 		}
 		ANDSetFlags(result);
@@ -546,17 +682,17 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = registerFile[op1Reg] & op2Imm;
+			XRegisterFile[destReg].writeDoubleWord(XRegisterFile[op1Reg].readDoubleWord() & op2Imm);
 			cpuLog.append("ANDI \t X" + destReg + ", X" + op1Reg + ", #" + op2Imm + "\n");
 		}
 	}
 
 	private void ANDIS(int destReg, int op1Reg, int op2Imm) {
-		long result = registerFile[op1Reg] & op2Imm;
+		long result = XRegisterFile[op1Reg].readDoubleWord() & op2Imm;
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = result;
+			XRegisterFile[destReg].writeDoubleWord(result);
 			cpuLog.append("ANDIS \t X" + destReg + ", X" + op1Reg + ", #" + op2Imm + "\n");
 		}
 		ANDSetFlags(result);
@@ -567,7 +703,7 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = registerFile[op1Reg] | registerFile[op2Reg];
+			XRegisterFile[destReg].writeDoubleWord(XRegisterFile[op1Reg].readDoubleWord() | XRegisterFile[op2Reg].readDoubleWord());
 			cpuLog.append("ORR \t X" + destReg + ", X" + op1Reg + ", X" + op2Reg + "\n");
 		}
 	}
@@ -576,7 +712,7 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = registerFile[op1Reg] | op2Imm;
+			XRegisterFile[destReg].writeDoubleWord(XRegisterFile[op1Reg].readDoubleWord() | op2Imm);
 			cpuLog.append("ORRI \t X" + destReg + ", X" + op1Reg + ", #" + op2Imm + "\n");
 		}
 	}
@@ -585,7 +721,7 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = registerFile[op1Reg] ^ registerFile[op2Reg];
+			XRegisterFile[destReg].writeDoubleWord(XRegisterFile[op1Reg].readDoubleWord() ^ XRegisterFile[op2Reg].readDoubleWord());
 			cpuLog.append("EOR \t X" + destReg + ", X" + op1Reg + ", X" + op2Reg + "\n");
 		}
 	}
@@ -594,7 +730,7 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = registerFile[op1Reg] ^ op2Imm;
+			XRegisterFile[destReg].writeDoubleWord(XRegisterFile[op1Reg].readDoubleWord() ^ op2Imm);;
 			cpuLog.append("EORI \t X" + destReg + ", X" + op1Reg + ", #" + op2Imm + "\n");
 		}
 	}
@@ -603,7 +739,7 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = registerFile[op1Reg] << op2Imm;
+			XRegisterFile[destReg].writeDoubleWord(XRegisterFile[op1Reg].readDoubleWord() << op2Imm);
 			cpuLog.append("LSL \t X" + destReg + ", X" + op1Reg + ", #" + op2Imm + "\n");
 		}
 	}
@@ -612,7 +748,7 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = registerFile[op1Reg] >>> op2Imm;
+			XRegisterFile[destReg].writeDoubleWord(XRegisterFile[op1Reg].readDoubleWord() >>> op2Imm);
 			cpuLog.append("LSR \t X" + destReg + ", X" + op1Reg + ", #" + op2Imm + "\n");
 		}
 	}
@@ -623,7 +759,7 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = memory.loadDoubleword(registerFile[baseAddressReg]+offset);
+			XRegisterFile[destReg].writeDoubleWord(memory.loadDoubleword(XRegisterFile[baseAddressReg].readDoubleWord()+offset));
 			cpuLog.append("LDUR \t X" + destReg + ", [X" + baseAddressReg + ", #" + offset + "] \n");
 		}
 	}
@@ -631,8 +767,8 @@ public class CPU {
 	private void STUR(int valReg, int baseAddressReg, int offset, Memory memory) 
 			throws SegmentFaultException, SPAlignmentException {
 		if (baseAddressReg == SP) checkSPAlignment();
-		memory.storeDoubleword(registerFile[baseAddressReg]+offset, registerFile[valReg]);
-		clearExclusiveAccessTag(registerFile[baseAddressReg]+offset, Memory.DOUBLEWORD_SIZE);
+		memory.storeDoubleword(XRegisterFile[baseAddressReg].readDoubleWord()+offset, XRegisterFile[valReg].readDoubleWord());
+		clearExclusiveAccessTag(XRegisterFile[baseAddressReg].readDoubleWord()+offset, Memory.DOUBLEWORD_SIZE);
 		cpuLog.append("STUR \t X" + valReg + ", [X" + baseAddressReg + ", #" + offset + "] \n");
 	}
 
@@ -642,7 +778,7 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = memory.loadSignedWord(registerFile[baseAddressReg]+offset);
+			XRegisterFile[destReg].writeDoubleWord(memory.loadSignedWord(XRegisterFile[baseAddressReg].readDoubleWord()+offset));
 			cpuLog.append("LDURSW \t X" + destReg + ", [X" + baseAddressReg + ", #" + offset + "] \n");
 		}
 	}
@@ -650,8 +786,8 @@ public class CPU {
 	private void STURW(int valReg, int baseAddressReg, int offset, Memory memory) 
 			throws SegmentFaultException, SPAlignmentException {
 		if (baseAddressReg == SP) checkSPAlignment();
-		memory.storeWord(registerFile[baseAddressReg]+offset, registerFile[valReg]);
-		clearExclusiveAccessTag(registerFile[baseAddressReg]+offset, Memory.WORD_SIZE);
+		memory.storeWord(XRegisterFile[baseAddressReg].readDoubleWord()+offset, XRegisterFile[valReg].readDoubleWord());
+		clearExclusiveAccessTag(XRegisterFile[baseAddressReg].readDoubleWord()+offset, Memory.WORD_SIZE);
 		cpuLog.append("STURW \t X" + valReg + ", [X" + baseAddressReg + ", #" + offset + "] \n");
 	}
 
@@ -661,7 +797,7 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = memory.loadHalfword(registerFile[destReg]+offset);
+			XRegisterFile[destReg].writeDoubleWord(memory.loadHalfword(XRegisterFile[baseAddressReg].readDoubleWord()+offset));
 			cpuLog.append("LDURH \t X" + destReg + ", [X" + baseAddressReg + ", #" + offset + "] \n");
 		}
 	}
@@ -669,8 +805,8 @@ public class CPU {
 	private void STURH(int valReg, int baseAddressReg, int offset, Memory memory) 
 			throws SegmentFaultException, SPAlignmentException {
 		if (baseAddressReg == SP) checkSPAlignment();
-		memory.storeHalfword(registerFile[baseAddressReg]+offset, registerFile[valReg]);
-		clearExclusiveAccessTag(registerFile[baseAddressReg]+offset, Memory.HALFWORD_SIZE);
+		memory.storeHalfword(XRegisterFile[baseAddressReg].readDoubleWord()+offset, XRegisterFile[valReg].readDoubleWord());
+		clearExclusiveAccessTag(XRegisterFile[baseAddressReg].readDoubleWord()+offset, Memory.HALFWORD_SIZE);
 		cpuLog.append("STURH \t X" + valReg + ", [X" + baseAddressReg + ", #" + offset + "] \n");
 	}
 
@@ -680,7 +816,7 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = memory.loadByte(registerFile[baseAddressReg]+offset);
+			XRegisterFile[destReg].writeDoubleWord(memory.loadByte(XRegisterFile[baseAddressReg].readDoubleWord()+offset));
 			cpuLog.append("LDURB \t X" + destReg + ", [X" + baseAddressReg + ", #" + offset + "] \n");
 		}
 	}
@@ -688,19 +824,19 @@ public class CPU {
 	private void STURB(int valReg, int baseAddressReg, int offset, Memory memory) 
 			throws SegmentFaultException, SPAlignmentException {
 		if (baseAddressReg == SP) checkSPAlignment();
-		memory.storeByte(registerFile[baseAddressReg]+offset, registerFile[valReg]);
-		clearExclusiveAccessTag(registerFile[baseAddressReg]+offset, Memory.BYTE_SIZE);
+		memory.storeByte(XRegisterFile[baseAddressReg].readDoubleWord()+offset, XRegisterFile[valReg].readDoubleWord());
+		clearExclusiveAccessTag(XRegisterFile[baseAddressReg].readDoubleWord()+offset, Memory.BYTE_SIZE);
 		cpuLog.append("STURB \t X" + valReg + ", [X" + baseAddressReg + ", #" + offset + "] \n");
 	}
 
 	private void LDXR(int destReg, int baseAddressReg, int offset, Memory memory) 
 			throws SegmentFaultException, SPAlignmentException {
 		if (baseAddressReg == SP) checkSPAlignment();
-		long address = registerFile[baseAddressReg] + offset;
+		long address = XRegisterFile[baseAddressReg].readDoubleWord() + offset;
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = memory.loadDoubleword(address);
+			XRegisterFile[destReg].writeDoubleWord(memory.loadDoubleword(address));
 			taggedAddress = address;
 			cpuLog.append("LDXR \t X" + destReg + ", [X" + baseAddressReg + ", #" + offset + "] \n");
 		}
@@ -709,14 +845,14 @@ public class CPU {
 	private void STXR(int valReg, int outcomeReg, int baseAddressReg, int offset, Memory memory)
 			throws SegmentFaultException, SPAlignmentException {
 		if (baseAddressReg == SP) checkSPAlignment();
-		long address = registerFile[baseAddressReg] + offset;
+		long address = XRegisterFile[baseAddressReg].readDoubleWord() + offset;
 		if (taggedAddress == address) {
-			memory.storeDoubleword(address, registerFile[valReg]);
-			registerFile[outcomeReg] = 0;
+			memory.storeDoubleword(address, XRegisterFile[valReg].readDoubleWord());
+			XRegisterFile[outcomeReg].writeDoubleWord(0);
 			taggedAddress = 0;
 			STXRSucceed = true;
 		} else {
-			registerFile[outcomeReg] = 1;
+			XRegisterFile[outcomeReg].writeDoubleWord(1);
 			STXRSucceed = false;
 		}
 		cpuLog.append("STXR \t X" + valReg + ", X" + outcomeReg + ", [X" + baseAddressReg + ", #" + offset + "] \n");
@@ -726,7 +862,7 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = immediate << quadrantShift;
+			XRegisterFile[destReg].writeDoubleWord(immediate << quadrantShift);
 			cpuLog.append("MOVZ \t X" + destReg + ", #" + immediate + ", LSL #" + quadrantShift + " \n");
 		}
 	}
@@ -735,25 +871,34 @@ public class CPU {
 		if (destReg == XZR) {
 			cpuLog.append("Ignored attempted assignment to XZR. \n");
 		} else {
-			registerFile[destReg] = registerFile[destReg] | (immediate << quadrantShift);
+			XRegisterFile[destReg].writeDoubleWord(XRegisterFile[destReg].readDoubleWord() | (immediate << quadrantShift));
 			cpuLog.append("MOVK \t X" + destReg + ", #" + immediate + ", LSL #" + quadrantShift + " \n");
 		}
 	}
 
 	private void CBZ(int conditionReg, int branchIndex) {
-		if (registerFile[conditionReg] == 0) {
+		if (XRegisterFile[conditionReg].readDoubleWord() == 0) {
 			instructionIndex = branchIndex;
 		}
 		cpuLog.append("CBZ \t X" + conditionReg + ", " + "0x" + Long.toHexString(getPC()) + " \n");
-		branchTaken = (registerFile[conditionReg] == 0);
+		branchTaken = (XRegisterFile[conditionReg].readDoubleWord() == 0);
 	}
 
 	private void CBNZ(int conditionReg, int branchIndex) {
-		if (registerFile[conditionReg] != 0) {
+		if (XRegisterFile[conditionReg].readDoubleWord() != 0) {
 			instructionIndex = branchIndex;
 		}
 		cpuLog.append("CBNZ \t X" + conditionReg + ", " + "0x" + Long.toHexString(getPC()) + " \n");
-		branchTaken = (registerFile[conditionReg] != 0);
+		branchTaken = (XRegisterFile[conditionReg].readDoubleWord() != 0);
+	}
+	
+	private void LDA(int destReg, long addressToLoad) {
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			XRegisterFile[destReg].writeDoubleWord(addressToLoad);
+		}
+		cpuLog.append("LDA \t X" + destReg + ", " + "0x" + Long.toHexString(addressToLoad) + " \n");
 	}
 
 	private void BEQ(int branchIndex) {
@@ -874,31 +1019,171 @@ public class CPU {
 	}
 
 	private void BR(int branchReg, Memory memory) throws SegmentFaultException, PCAlignmentException {
-		if (registerFile[branchReg]%Memory.WORD_SIZE != 0) {
-			throw new PCAlignmentException(registerFile[branchReg]);
+		if (XRegisterFile[branchReg].readDoubleWord()%Memory.WORD_SIZE != 0) {
+			throw new PCAlignmentException(XRegisterFile[branchReg].readDoubleWord());
 		}
-		if (registerFile[branchReg] < Memory.TEXT_SEGMENT_OFFSET 
-				|| registerFile[branchReg] > memory.getStaticDataSegmentOffset()-Memory.WORD_SIZE) {
-			throw new SegmentFaultException(registerFile[branchReg], "text");
+		if (XRegisterFile[branchReg].readDoubleWord() < Memory.TEXT_SEGMENT_OFFSET 
+				|| XRegisterFile[branchReg].readDoubleWord() > memory.getStaticDataSegmentOffset()-Memory.WORD_SIZE) {
+			throw new SegmentFaultException(XRegisterFile[branchReg].readDoubleWord(), "text");
 		}
-		instructionIndex = (int) (registerFile[branchReg] - Memory.TEXT_SEGMENT_OFFSET) / INSTRUCTION_SIZE;
+		instructionIndex = (int) (XRegisterFile[branchReg].readDoubleWord() - Memory.TEXT_SEGMENT_OFFSET) / INSTRUCTION_SIZE;
 		cpuLog.append("BR \t X" + "0x" + Long.toHexString(getPC()) + " \n");
 	}
 
 	private void BL(int branchIndex) {
-		registerFile[LR] = instructionIndex * INSTRUCTION_SIZE + Memory.TEXT_SEGMENT_OFFSET;
+		XRegisterFile[LR].writeDoubleWord(instructionIndex * INSTRUCTION_SIZE + Memory.TEXT_SEGMENT_OFFSET);
 		instructionIndex = branchIndex;
-		cpuLog.append("BL \t" + "0x" + Long.toHexString(registerFile[LR]) + " \n");
+		cpuLog.append("BL \t" + "0x" + Long.toHexString(XRegisterFile[LR].readDoubleWord()) + " \n");
+	}
+	
+	private void FADDS(int destReg, int op1Reg, int op2Reg) {
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			DRegisterFile[destReg].writeWord(Float.floatToIntBits(
+							Float.intBitsToFloat(DRegisterFile[op1Reg].readWord()) +
+							Float.intBitsToFloat(DRegisterFile[op2Reg].readWord())
+							));
+			cpuLog.append("FADDS \t S" + destReg + ", S" + op1Reg + ", S" + op2Reg + "\n");
+		}
+	}
+	
+	private void FADDD(int destReg, int op1Reg, int op2Reg) {
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			DRegisterFile[destReg].writeDoubleWord(Double.doubleToLongBits(
+							Double.longBitsToDouble(DRegisterFile[op1Reg].readDoubleWord()) +
+							Double.longBitsToDouble(DRegisterFile[op2Reg].readDoubleWord())
+							));
+			cpuLog.append("FADDD \t D" + destReg + ", D" + op1Reg + ", D" + op2Reg + "\n");
+		}
+	}
+	
+	private void FSUBS(int destReg, int op1Reg, int op2Reg) {
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			DRegisterFile[destReg].writeWord(Float.floatToIntBits(
+							Float.intBitsToFloat(DRegisterFile[op1Reg].readWord()) -
+							Float.intBitsToFloat(DRegisterFile[op2Reg].readWord())
+							));
+			cpuLog.append("FSUBS \t S" + destReg + ", S" + op1Reg + ", S" + op2Reg + "\n");
+		}
+	}
+	
+	private void FSUBD(int destReg, int op1Reg, int op2Reg) {
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			DRegisterFile[destReg].writeDoubleWord(Double.doubleToLongBits(
+							Double.longBitsToDouble(DRegisterFile[op1Reg].readDoubleWord()) -
+							Double.longBitsToDouble(DRegisterFile[op2Reg].readDoubleWord())
+							));
+			cpuLog.append("FSUBD \t D" + destReg + ", D" + op1Reg + ", D" + op2Reg + "\n");
+		}
+	}
+	
+	private void FMULS(int destReg, int op1Reg, int op2Reg) {
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			DRegisterFile[destReg].writeWord(Float.floatToIntBits(
+							Float.intBitsToFloat(DRegisterFile[op1Reg].readWord()) *
+							Float.intBitsToFloat(DRegisterFile[op2Reg].readWord())
+							));
+			cpuLog.append("FMULS \t S" + destReg + ", S" + op1Reg + ", S" + op2Reg + "\n");
+		}
+	}
+	
+	private void FMULD(int destReg, int op1Reg, int op2Reg) {
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			DRegisterFile[destReg].writeDoubleWord(Double.doubleToLongBits(
+							Double.longBitsToDouble(DRegisterFile[op1Reg].readDoubleWord()) *
+							Double.longBitsToDouble(DRegisterFile[op2Reg].readDoubleWord())
+							));
+			cpuLog.append("FMULD \t D" + destReg + ", D" + op1Reg + ", D" + op2Reg + "\n");
+		}
+	}
+	
+	private void FDIVS(int destReg, int op1Reg, int op2Reg) {
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			DRegisterFile[destReg].writeWord(Float.floatToIntBits(
+							Float.intBitsToFloat(DRegisterFile[op1Reg].readWord()) /
+							Float.intBitsToFloat(DRegisterFile[op2Reg].readWord())
+							));
+			cpuLog.append("FDIVS \t S" + destReg + ", S" + op1Reg + ", S" + op2Reg + "\n");
+		}
+	}
+	
+	private void FDIVD(int destReg, int op1Reg, int op2Reg) {
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			DRegisterFile[destReg].writeDoubleWord(Double.doubleToLongBits(
+							Double.longBitsToDouble(DRegisterFile[op1Reg].readDoubleWord()) /
+							Double.longBitsToDouble(DRegisterFile[op2Reg].readDoubleWord())
+							));
+			cpuLog.append("FDIVD \t D" + destReg + ", D" + op1Reg + ", D" + op2Reg + "\n");
+		}
+	}
+	
+	private void FCMPS(int op1Reg, int op2Reg) {
+		float op1f = Float.intBitsToFloat(DRegisterFile[op1Reg].readWord());
+		float op2f = Float.intBitsToFloat(DRegisterFile[op2Reg].readWord());
+		FCMPSetFlags(Float.compare(op1f, op2f), Float.isNaN(op1f) || Float.isNaN(op1f));	
+		cpuLog.append("FCMPS \t S" + op1Reg + ", S" + op2Reg + "\n");
+		cpuLog.append("Set flags + \n");
+	}
+	
+	private void FCMPD(int op1Reg, int op2Reg) {
+		double op1d = Double.longBitsToDouble(DRegisterFile[op1Reg].readDoubleWord());
+		double op2d = Double.longBitsToDouble(DRegisterFile[op2Reg].readDoubleWord());
+		FCMPSetFlags(Double.compare(op1d, op2d), Double.isNaN(op1d) || Double.isNaN(op2d));
+		cpuLog.append("FCMPD \t D" + op1Reg + ", D" + op2Reg + "\n");	
+		cpuLog.append("Set flags + \n");
+	}
+	
+	private void STURD(int valReg, int baseAddressReg, int offset, Memory memory) 
+			throws SegmentFaultException, SPAlignmentException {
+		if (baseAddressReg == SP) checkSPAlignment();
+		memory.storeDoubleword(XRegisterFile[baseAddressReg].readDoubleWord()+offset, DRegisterFile[valReg].readDoubleWord());
+		clearExclusiveAccessTag(XRegisterFile[baseAddressReg].readDoubleWord()+offset, Memory.DOUBLEWORD_SIZE);
+		cpuLog.append("STURD \t D" + valReg + ", [X" + baseAddressReg + ", #" + offset + "] \n");
+	}
+	
+	private void LDURD(int destReg, int baseAddressReg, int offset, Memory memory) 
+			throws SegmentFaultException, SPAlignmentException {
+		if (baseAddressReg == SP) checkSPAlignment();
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			DRegisterFile[destReg].writeDoubleWord(memory.loadDoubleword(XRegisterFile[baseAddressReg].readDoubleWord()+offset));
+			cpuLog.append("LDURD \t D" + destReg + ", [X" + baseAddressReg + ", #" + offset + "] \n");
+		}
+	}
+	
+	private void STURS(int valReg, int baseAddressReg, int offset, Memory memory) 
+			throws SegmentFaultException, SPAlignmentException {
+		if (baseAddressReg == SP) checkSPAlignment();
+		memory.storeWord(XRegisterFile[baseAddressReg].readDoubleWord()+offset, DRegisterFile[valReg].readDoubleWord());
+		clearExclusiveAccessTag(XRegisterFile[baseAddressReg].readDoubleWord()+offset, Memory.DOUBLEWORD_SIZE);
+		cpuLog.append("STURD \t S" + valReg + ", [X" + baseAddressReg + ", #" + offset + "] \n");
+	}
+	
+	private void LDURS(int destReg, int baseAddressReg, int offset, Memory memory) 
+			throws SegmentFaultException, SPAlignmentException {
+		if (baseAddressReg == SP) checkSPAlignment();
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			DRegisterFile[destReg].writeWord((int) memory.loadDoubleword(XRegisterFile[baseAddressReg].readDoubleWord()+offset));
+			cpuLog.append("LDURD \t S" + destReg + ", [X" + baseAddressReg + ", #" + offset + "] \n");
+		}
 	}
 
-	private boolean branchTaken = false;
-	private boolean STXRSucceed = false;
-	private StringBuilder cpuLog = new StringBuilder("");
-	private long[] registerFile;
-	private long taggedAddress;
-	private int instructionIndex;
-	private boolean Nflag;
-	private boolean Zflag;
-	private boolean Cflag;
-	private boolean Vflag;
 }

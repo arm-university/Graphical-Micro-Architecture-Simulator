@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.arm.legv8simulator.client.Error;
 import com.arm.legv8simulator.client.cpu.CPU;
+import com.arm.legv8simulator.client.cpu.RegisterType;
 import com.arm.legv8simulator.client.instruction.Decoder;
 import com.arm.legv8simulator.client.instruction.ImmediateOutOfBoundsException;
 import com.arm.legv8simulator.client.instruction.Instruction;
@@ -19,6 +20,15 @@ import com.arm.legv8simulator.client.memory.Memory;
  * @author Jonathan Wright, 2016
  */
 public abstract class LEGv8_Simulator {
+	
+	protected ArrayList<TextLine> code;
+	protected int currentLineNumber;
+	protected Error runtimeError = null;
+	protected ArrayList<Error> compileErrors; 
+	protected Memory memory;
+	protected HashMap<String, Integer> branchTable;
+	protected ArrayList<Instruction> cpuInstructions;
+	protected CPU cpu;
 
 	/**
 	 * Initialises all necessary components for the simulator to run. 
@@ -45,7 +55,7 @@ public abstract class LEGv8_Simulator {
 	/*
 	 * Any errors are stored in the compileErrors arraylist
 	 */
-	public void parseCode() {
+	private void parseCode() {
 		for (int i=0; i<code.size(); i++) {
 			if (!code.get(i).getLine().isEmpty()) {
 				code.get(i).tokenize();
@@ -63,7 +73,7 @@ public abstract class LEGv8_Simulator {
 	 * For each label in the source code, an entry is inserted into the branch lookup table
 	 * mapping from the label to the index of the instruction immediately after it.
 	 */
-	public void populateBranchTable() {
+	private void populateBranchTable() {
 		String label;
 		Mnemonic mnem;
 		int instructionCount = 0;
@@ -85,7 +95,7 @@ public abstract class LEGv8_Simulator {
 	/*
 	 * Errors are stored in the compileErros arraylist
 	 */
-	public void decodeInstructions() {
+	private void decodeInstructions() {
 		TextLine line;
 		for (int i=0; i<code.size(); i++) {
 			line = code.get(i);
@@ -135,8 +145,8 @@ public abstract class LEGv8_Simulator {
 	 * @param index	the index of any CPU register. Permitted range 0-31
 	 * @return		the value stored in the specified CPU register
 	 */
-	public long getCPURegister(int index) {
-		return cpu.getRegister(index);
+	public long getCPURegister(RegisterType type, int index) {
+		return cpu.getRegister(type, index);
 	} 
 	
 	/**
@@ -197,12 +207,9 @@ public abstract class LEGv8_Simulator {
 		return currentLineNumber;
 	}
 	
-	protected ArrayList<TextLine> code;
-	protected int currentLineNumber;
-	protected Error runtimeError = null;
-	protected ArrayList<Error> compileErrors; 
-	protected Memory memory;
-	protected HashMap<String, Integer> branchTable;
-	protected ArrayList<Instruction> cpuInstructions;
-	protected CPU cpu;
+	public Memory getMemoryState() {
+		return memory;
+	}
+	
+
 }

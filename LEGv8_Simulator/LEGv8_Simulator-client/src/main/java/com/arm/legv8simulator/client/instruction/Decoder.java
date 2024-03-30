@@ -16,18 +16,18 @@ import com.google.gwt.core.client.JavaScriptException;
  */
 public class Decoder {
 	
-	public static final int ARITHMETIC_IMM_LOWER_BOUND = 0;
-	public static final int ARITHMETIC_IMM_UPPER_BOUND = 4095;
-	public static final int OFFSET_IMM_LOWER_BOUND = -256;
-	public static final int OFFSET_IMM_UPPER_BOUND = 255;
-	public static final int SHIFT_IMM_LOWER_BOUND = 0;
-	public static final int SHIFT_IMM_UPPER_BOUND = 63;
-	public static final int WIDE_IMM_LOWER_BOUND = 0;
-	public static final int WIDE_IMM_UPPER_BOUND = 65535;
-	public static final int LOGICAL_IMM_LOWER_BOUND = ARITHMETIC_IMM_LOWER_BOUND;
-	public static final int LOGICAL_IMM_UPPER_BOUND = ARITHMETIC_IMM_UPPER_BOUND;
-	public static final int[] WIDE_SHIFT_IMM = {0, 16, 32, 48};
-	public static final int EXCLUSIVE_IMM = 0;
+	public static final int		ARITHMETIC_IMM_LOWER_BOUND = 0;
+	public static final int		ARITHMETIC_IMM_UPPER_BOUND = 4095;
+	public static final int		OFFSET_IMM_LOWER_BOUND = -256;
+	public static final int		OFFSET_IMM_UPPER_BOUND = 255;
+	public static final int		SHIFT_IMM_LOWER_BOUND = 0;
+	public static final int		SHIFT_IMM_UPPER_BOUND = 63;
+	public static final int		WIDE_IMM_LOWER_BOUND = 0;
+	public static final int		WIDE_IMM_UPPER_BOUND = 65535;
+	public static final int		LOGICAL_IMM_LOWER_BOUND = ARITHMETIC_IMM_LOWER_BOUND;
+	public static final int		LOGICAL_IMM_UPPER_BOUND = ARITHMETIC_IMM_UPPER_BOUND;
+	public static final int[]	WIDE_SHIFT_IMM = {0, 16, 32, 48};
+	public static final int		EXCLUSIVE_IMM = 0;
 
 	/**
 	 * @param mnemonic		the instruction mnemonic
@@ -56,6 +56,14 @@ public class Decoder {
 		case ADDIS :
 			return new Instruction(mnemonic, decodeRRIArithmeticArgs(args), lineNumber, ControlUnitConfiguration.RRI_FLAGS);
 		case MUL :		// added MUL instruction, SIMONE.DEIANA@studenti.units.it
+			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
+		case UMULH :	// added UMULH instruction, SIMONE.DEIANA@studenti.units.it
+			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
+		case SMULH :	// added SMULH instruction, SIMONE.DEIANA@studenti.units.it
+			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
+		case UDIV :	// added UDIV instruction, SIMONE.DEIANA@studenti.units.it
+			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
+		case SDIV :	// added SDIV instruction, SIMONE.DEIANA@studenti.units.it
 			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
 		case SUB :
 			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
@@ -113,6 +121,8 @@ public class Decoder {
 			return new Instruction(mnemonic, decodeRLArgs(args, branchTable), lineNumber, ControlUnitConfiguration.RL);
 		case CBNZ :
 			return new Instruction(mnemonic, decodeRLArgs(args, branchTable), lineNumber, ControlUnitConfiguration.RL);
+		case LDA :
+			return new Instruction(mnemonic, decodeRLArgs(args, branchTable), lineNumber, ControlUnitConfiguration.RL);
 		case BEQ :
 			return new Instruction(mnemonic, decodeLArgs(args, branchTable), lineNumber, ControlUnitConfiguration.L_COND);
 		case BNE :
@@ -153,6 +163,34 @@ public class Decoder {
 			return new Instruction(Mnemonic.SUBIS, decodeRIArgs(args), lineNumber, null);
 		case MOV :
 			return new Instruction(Mnemonic.ORR, decodeMOVArgs(args), lineNumber, null);
+		case FADDD :
+			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
+		case FADDS :
+			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
+		case FSUBS :
+			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
+		case FSUBD :
+			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
+		case FMULS :
+			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
+		case FMULD :
+			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
+		case FDIVS :
+			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
+		case FDIVD :
+			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
+		case FCMPS :	// VEDERE COME FUNZIONANO I CMP PER I FLOATING POINT
+			return new Instruction(mnemonic, decodeRRArgs(args), lineNumber, ControlUnitConfiguration.RR_FLAGS);
+		case FCMPD :
+			return new Instruction(mnemonic, decodeRRArgs(args), lineNumber, ControlUnitConfiguration.RR_FLAGS);
+		case LDURS :
+			return new Instruction(mnemonic, decodeRMArgs(args), lineNumber, ControlUnitConfiguration.RM_LOAD);
+		case STURS :
+			return new Instruction(mnemonic, decodeRMArgs(args), lineNumber, ControlUnitConfiguration.RM_STORE);
+		case LDURD :
+			return new Instruction(mnemonic, decodeRMArgs(args), lineNumber, ControlUnitConfiguration.RM_LOAD);
+		case STURD :
+			return new Instruction(mnemonic, decodeRMArgs(args), lineNumber, ControlUnitConfiguration.RM_STORE);
 		default : return null;
 		}
 	}
@@ -171,6 +209,13 @@ public class Decoder {
 		return operands;
 	}
 	
+	private static int[] decodeRRArgs(ArrayList<String> args) {
+		int[] operands = new int[2];
+		operands[0] = decodeRegister(args.get(0));
+		operands[1] = decodeRegister(args.get(1));
+		return operands;
+	}
+	
 	private static int[] decodeMOVArgs(ArrayList<String> args) {
 		int[] operands = new int[3];
 		operands[0] = decodeRegister(args.get(0));
@@ -180,7 +225,7 @@ public class Decoder {
 	}
 	
 	private static int[] decodeRRRArgs(ArrayList<String> args) {
-		int[] operands = new int[2];
+		int[] operands = new int[3];
 		operands[0] = decodeRegister(args.get(0));
 		operands[1] = decodeRegister(args.get(1));
 		operands[2] = decodeRegister(args.get(2));
@@ -278,21 +323,23 @@ public class Decoder {
 	}
 	
 	private static int decodeRegister(String reg) {
+		
 		switch (reg) {
-		case "XZR" : return CPU.XZR;
+		case "XZR" : ;
 		case "xzr" : return CPU.XZR;
-		case "IP0" : return CPU.IP0;
+		case "IP0" : ;
 		case "ip0" : return CPU.IP0;
-		case "IP1" : return CPU.IP1;
+		case "IP1" : ;
 		case "ip1" : return CPU.IP1;
-		case "SP" : return CPU.SP;
+		case "SP" : ;
 		case "sp" : return CPU.SP;
-		case "FP" : return CPU.FP;
+		case "FP" : ;
 		case "fp" : return CPU.FP;
-		case "LR" : return CPU.LR;
+		case "LR" : ;
 		case "lr" : return CPU.LR;
 		default : return Integer.parseInt(reg.substring(1));
 		}
+		
 	}
 	
 	private static int parseImmediate(String imm) {

@@ -126,11 +126,11 @@ public class SingleCycleVis {
 		clearCanvas();
 		Mnemonic m = ins.getMnemonic();
 		switch (m.type) {
-		case MNEMONIC_RRR :
+		case XMNEMONIC_RRR :
 			drawDatapathRRR(m.equals(Mnemonic.ADDS) || m.equals(Mnemonic.SUBS) || m.equals(Mnemonic.ANDS), m);
 			drawInstructionTextRRR(ins);
 			break;
-		case MNEMONIC_RRI : 
+		case XMNEMONIC_RRI : 
 			drawDatapathRRI(m.equals(Mnemonic.ADDIS) || m.equals(Mnemonic.SUBIS) || m.equals(Mnemonic.ANDIS), m);
 			if (m.equals(Mnemonic.LSL) || m.equals(Mnemonic.LSR)) {
 				drawInstructionTextShift(ins);
@@ -138,11 +138,11 @@ public class SingleCycleVis {
 				drawInstructionTextRRI(ins);
 			}
 			break;
-		case MNEMONIC_RISI :
+		case XMNEMONIC_RISI :
 			drawDatapathRRI(false, m);
 			drawInstructionTextRISI(ins);
 			break;
-		case MNEMONIC_RM :
+		case XMNEMONIC_RM :
 			if (m.equals(Mnemonic.STUR) || m.equals(Mnemonic.STURW) || m.equals(Mnemonic.STURH) || m.equals(Mnemonic.STURB)) {
 				drawDatapathStore(m);
 				drawInstructionTextRM(ins);
@@ -151,11 +151,11 @@ public class SingleCycleVis {
 				drawInstructionTextRM(ins);
 			}
 			break;
-		case MNEMONIC_RRM :
+		case XMNEMONIC_RRM :
 			drawDatapathSTXR(stxrSucceed, m);
 			drawInstructionTextRRM(ins);
 			break;
-		case MNEMONIC_RL :
+		case XMNEMONIC_RL :
 			drawDatapathCB(branchTaken, m);
 			drawInstructionTextRL(ins, instructionIndex, label);
 			break;

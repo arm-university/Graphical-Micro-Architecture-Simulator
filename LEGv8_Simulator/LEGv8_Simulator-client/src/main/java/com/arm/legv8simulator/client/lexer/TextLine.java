@@ -17,6 +17,17 @@ import com.arm.legv8simulator.client.parser.Parser;
  * @author Jonathan Wright, 2016
  */
 public class TextLine {
+	
+
+	private boolean parsed = false;
+	private String line;
+	private String lineNoComment;
+	private ArrayList<Token> tokens = new ArrayList<Token>();
+	private String label = null;
+	private TokenType mneType = null;
+	private Mnemonic mnemonic = null;
+	private ArrayList<String> args = new ArrayList<String>();
+	private String comment = null;
 
 	/**
 	 * @param line	a line of LEGv8 source code from the text editor
@@ -71,7 +82,9 @@ public class TextLine {
 			case LBRACKET : break;
 			case RBRACKET : break;
 			case LABEL : label = t.getData().substring(0, t.getData().length()-1); break;
-			case REGISTER : args.add(t.getData()); break;
+			case XREGISTER : args.add(t.getData()); break;
+			case SREGISTER : args.add(t.getData()); break;
+			case DREGISTER : args.add(t.getData()); break;
 			case IMMEDIATE : args.add(t.getData()); break;
 			case IDENTIFIER : args.add(t.getData()); break;
 			// following case should never occur - parser never accepts ERROR tokens
@@ -122,25 +135,37 @@ public class TextLine {
 	 */
 	private String formatArgs() {
 		switch (mneType) {
-		case MNEMONIC_R : 
+		case XMNEMONIC_R : 
 			return formatRArgs();
-		case MNEMONIC_RR : 
+		case XMNEMONIC_RR : 
 			return formatRRArgs();
-		case MNEMONIC_RRR : 
+		case SMNEMONIC_RR : 
+			return formatRRArgs();
+		case DMNEMONIC_RR : 
+			return formatRRArgs();
+		case XMNEMONIC_RRR : 
 			return formatRRRArgs();
-		case MNEMONIC_RI : 
+		case SMNEMONIC_RRR : 
+			return formatRRRArgs();
+		case DMNEMONIC_RRR : 
+			return formatRRRArgs();
+		case XMNEMONIC_RI : 
 			return formatRIArgs();
-		case MNEMONIC_RRI : 
+		case XMNEMONIC_RRI : 
 			return formatRRIArgs();
-		case MNEMONIC_RM : 
+		case XMNEMONIC_RM : 
 			return formatRMArgs();
-		case MNEMONIC_RRM : 
+		case SMNEMONIC_RM : 
+			return formatRMArgs();
+		case DMNEMONIC_RM : 
+			return formatRMArgs();
+		case XMNEMONIC_RRM : 
 			return formatRRMArgs();
-		case MNEMONIC_RISI : 
+		case XMNEMONIC_RISI : 
 			return formatRISIArgs();
 		case MNEMONIC_L : 
 			return formatLArgs();
-		case MNEMONIC_RL : 
+		case XMNEMONIC_RL : 
 			return formatRLArgs();
 		default : return "Args formatting Failed.";
 		}
@@ -246,13 +271,4 @@ public class TextLine {
 		}
 	}
 	
-	private boolean parsed = false;
-	private String line;
-	private String lineNoComment;
-	private ArrayList<Token> tokens = new ArrayList<Token>();
-	private String label = null;
-	private TokenType mneType = null;
-	private Mnemonic mnemonic = null;
-	private ArrayList<String> args = new ArrayList<String>();
-	private String comment = null;
 }

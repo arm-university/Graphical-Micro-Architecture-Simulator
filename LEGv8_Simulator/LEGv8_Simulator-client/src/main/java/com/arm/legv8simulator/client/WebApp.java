@@ -2,13 +2,15 @@ package com.arm.legv8simulator.client;
 
 import java.util.ArrayList;
 
+import com.arm.legv8simulator.client.cpu.RegisterType;
 import com.arm.legv8simulator.client.executionmodes.LEGv8_Simulator;
 import com.arm.legv8simulator.client.executionmodes.PipelinedSimulator;
 import com.arm.legv8simulator.client.executionmodes.SingleCycleSimulator;
 import com.arm.legv8simulator.client.instruction.Instruction;
 import com.arm.legv8simulator.client.lexer.TextLine;
+import com.arm.legv8simulator.client.memory.Memory;
+import com.arm.legv8simulator.client.memory.SegmentFaultException;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -24,7 +26,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -48,7 +49,7 @@ public class WebApp implements EntryPoint {
 	public static final String SINGLE_CYCLE_VISUAL = "Single Cycle";
 	public static final String PIPELINE_VISUAL = "Pipeline";
 	
-	private static final int HORIZTONAL_PADDING = 20;
+	private static final int HORIZONTAL_PADDING = 20;
 	private static final int VERTICAL_PADDING = 30;
 	private static final int BANNER_HEIGHT = 50;
 	private static final double ASPECT_RATIO = 1.432;
@@ -93,7 +94,7 @@ public class WebApp implements EntryPoint {
 				} else {
 					editor.setWidth(registerPanel.getOffsetWidth() + "px");
 				}
-				double datapathWidth = width-editorPanel.getOffsetWidth()-HORIZTONAL_PADDING;
+				double datapathWidth = width-editorPanel.getOffsetWidth()-HORIZONTAL_PADDING;
 				datapathPanel.remove(scDatapath.getCanvas());
 				scDatapath = new SingleCycleVis(datapathWidth, datapathWidth/ASPECT_RATIO);
 				if (singleCycleSim != null && singleCycleSim.getCurrentInstruction() != null) {
@@ -111,7 +112,7 @@ public class WebApp implements EntryPoint {
 				} else {
 					editor.setWidth(registerPanel.getOffsetWidth() + "px");
 				}
-				double datapathWidth = width-editorPanel.getOffsetWidth()-HORIZTONAL_PADDING;
+				double datapathWidth = width-editorPanel.getOffsetWidth()-HORIZONTAL_PADDING;
 				datapathPanel.remove(pDatapath.getCanvas());
 				pDatapath = new PipelineVis(datapathWidth, datapathWidth/ASPECT_RATIO);
 				datapathPanel.add(pDatapath.getCanvas());
@@ -123,7 +124,7 @@ public class WebApp implements EntryPoint {
 		editor.setWidth("600px"); // dummy values, size adjusted later based on window size
 		editor.setHeight("350px"); 
 		
-		// create cpuLog
+		 //create cpuLog				
 		cpuLog = new AceEditor();
 		cpuLog.setWidth("600px");
 		cpuLog.setHeight("350px");
@@ -139,9 +140,9 @@ public class WebApp implements EntryPoint {
 		editor.setFontSize(14);
 		editor.setTabSize(10);
 		editor.focus();
-		editor.setShowGutter(true);
+		editor.setShowGutter(true);		// "gutter" is the space between columns
 
-		// start the cpuLog and set its theme and mode
+		 // start the cpuLog and set its theme and mode
 		cpuLog.startEditor();
 		cpuLog.setTheme(AceEditorTheme.MONOKAI);
 		cpuLog.setReadOnly(true);
@@ -219,11 +220,11 @@ public class WebApp implements EntryPoint {
 		} else {
 			editor.setWidth(registerPanel.getOffsetWidth() + "px");
 		}
-		double datapathWidth = width-editorPanel.getOffsetWidth()-HORIZTONAL_PADDING;
+		double datapathWidth = width-editorPanel.getOffsetWidth()-HORIZONTAL_PADDING;
 		scDatapath = new SingleCycleVis(datapathWidth, datapathWidth/ASPECT_RATIO);
 		datapathPanel.add(scDatapath.getCanvas());
 		contentPanel.add(datapathPanel);
-		//page.add(debugPanel);
+		page.add(debugPanel);
 	}
 	
 	// builds theGUI for the pipelined execution mode
@@ -236,11 +237,11 @@ public class WebApp implements EntryPoint {
 		} else {
 			editor.setWidth(registerPanel.getOffsetWidth() + "px");
 		}
-		double datapathWidth = width-editorPanel.getOffsetWidth()-HORIZTONAL_PADDING;
+		double datapathWidth = width-editorPanel.getOffsetWidth()-HORIZONTAL_PADDING;
 		pDatapath = new PipelineVis(datapathWidth, datapathWidth/ASPECT_RATIO);
-		contentPanel.add(datapathPanel);
 		datapathPanel.add(debugPanel);
 		datapathPanel.add(pDatapath.getCanvas());
+		contentPanel.add(datapathPanel);
 		//debugPanel.add(datapathPanel);
 		//page.add(datapathPanel);
 	}
@@ -249,7 +250,7 @@ public class WebApp implements EntryPoint {
 		private void buildHelpPage() {
 			page.add(controlPanel);
 			if (contentPanel != null) page.remove(contentPanel);
-			contentPanel = new HorizontalPanel();
+			contentPanel = new VerticalPanel();
 			contentPanel.setHeight("100%");
 			contentPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 			contentPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
@@ -294,7 +295,7 @@ public class WebApp implements EntryPoint {
 					+ "In these roles they are labelled IP1, IP2, SP, FP, and LR respectively. These registers should only be referred to by their special "
 					+ "names when they are being used to store addresses; the special name implies accessing the register as a 64-bit entity. In order to "
 					+ "access the memory using an instruction, you must be aware that the Dynamic memory offset is 0x10000000 and the Stack base is 0x7ffffffffc. "
-					+ " ( now the Stack base is 0x7fffffff80 which is quadword aligned, if it breaks something let me know ) " // quadword aligned stack base to avoid manual adjustment every time (could break something, only done for convenience), SIMONE.DEIANA@studenti.units.it
+					+ " ( now the Stack base is " + Long.toHexString(Memory.STACK_BASE) + " which is quadword aligned, if it breaks something let me know ) " // quadword aligned stack base to avoid manual adjustment every time (could break something, only done for convenience), SIMONE.DEIANA@studenti.units.it
 					+ "Thus you should store the value ' 0x10000000' into a register e.g X7 and use this register as the memory base. So memory access is Mem[X7 + 40].");
 			Label line4 = new Label("Arithmetics instructions");
 			line4.addStyleName("arithLabel");
@@ -451,39 +452,79 @@ public class WebApp implements EntryPoint {
 		}
 
 	private void buildVisualisationUI() {
+		
 		page.add(controlPanel);
+		
 		if (contentPanel != null) page.remove(contentPanel);
-		contentPanel = new HorizontalPanel();
+		contentPanel = new VerticalPanel();
+		contentPanel.setSize("100%", "100%");
+		contentPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		contentPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
+		page.add(contentPanel);
+		HorizontalPanel editorAndStackPanel = new HorizontalPanel();
+		editorAndStackPanel.add(editorPanel);
+		editorPanel.setSize("100%", "100%");
+		editorAndStackPanel.add(stackPanel);
+		resetStackPanel();
+		contentPanel.add(editorAndStackPanel);
+		contentPanel.add(registerPanel);
+		registerPanel.setSize("100%", "100%");
+		resetRegisterPanel();
+		cpsrPanel.reset();
+
+		
+		datapathPanel = new VerticalPanel();
+		datapathPanel.addStyleName("datapathPanel");
+		datapathPanel.setSize("100%", "100%");
+		datapathPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		//contentPanel.add(datapathPanel);
+		/*contentPanel = new HorizontalPanel();
 		contentPanel.setSize("100%", "100%");
 		contentPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		contentPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 		page.add(contentPanel);
+		
 		leftContentPanel = new VerticalPanel();
-		leftContentPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		//leftContentPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		leftContentPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 		leftContentPanel.add(editorPanel);
 		leftContentPanel.add(registerPanel);
+		leftContentPanel.add(stackPanel);
 		resetRegisterPanel();
+		resetStackPanel();
 		cpsrPanel.reset();
+		
+		
 		contentPanel.add(leftContentPanel);
+		
+		
+		
+		rightContentPanel = new VerticalPanel();
+		rightContentPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		rightContentPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
+		datapathPanel = new VerticalPanel();
+		datapathPanel.addStyleName("datapathPanel");
+		datapathPanel.setSize("100%", "100%");
+		datapathPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+		rightContentPanel.add(datapathPanel);
+		contentPanel.add(rightContentPanel);
+		
 		int editorHeight = Window.getClientHeight()-controlPanel.getOffsetHeight()
 				-registerPanel.getOffsetHeight()-BANNER_HEIGHT-VERTICAL_PADDING;
 		if (editorHeight > 200) {
 			editor.setHeight(editorHeight + "px");
 		} else {
 			editor.setHeight("200px");
-		}
-		datapathPanel = new VerticalPanel();
-		datapathPanel.addStyleName("datapathPanel");
-		datapathPanel.setSize("100%", "100%");
-		datapathPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);		
+		}*/
+		
 	}
 	
 	// initialises all required UI components
 	private void initUIComponents() {
 		initControlPanel();
-		initRegisterPanel();
 		initEditorPanel();
+		initRegisterPanel();
+		initStackPanel();	
 		initDebugPanel();
 		page = new VerticalPanel();
 		page.setWidth("100%");
@@ -626,30 +667,91 @@ public class WebApp implements EntryPoint {
 	
 	// Initialises the register file part of the GUI, must be added to screen separately
 	private void initRegisterPanel() {
+		
 		HorizontalPanel regFile = new HorizontalPanel();
-		VerticalPanel leftRegPanel = new VerticalPanel();
-		VerticalPanel rightRegPanel = new VerticalPanel();
-		rightRegPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		pcPanel = new RegisterPanel(-1);
+		//regFile.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+		//regFile.setWidth("100%");
+		
+		VerticalPanel leftXRegPanel = new VerticalPanel();
+		VerticalPanel rightXRegPanel = new VerticalPanel();
+		VerticalPanel leftDRegPanel = new VerticalPanel();
+		VerticalPanel rightDRegPanel = new VerticalPanel();
+		VerticalPanel leftSRegPanel = new VerticalPanel();
+		VerticalPanel rightSRegPanel = new VerticalPanel();
+		
+		//rightXRegPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		//rightDRegPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		//rightSRegPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		
+		pcPanel = new RegisterPanel(RegisterType.X, -1);
 		pcPanel.addStyleName("pcReg");
 		cpsrPanel = new CPSRPanel();
 		cpsrPanel.addStyleName("cpsrReg");
-		leftRegPanel.add(pcPanel);
-		rightRegPanel.add(cpsrPanel);
+		leftXRegPanel.add(pcPanel);
+		rightXRegPanel.add(cpsrPanel);
+		
 		for (int i=0; i<32; i++) {
-			regPanels[i] = new RegisterPanel(i);
+			XRegPanels[i] = new RegisterPanel(RegisterType.X, i);
+			XRegPanels[i].setStyleName("individualReg");
 			if (i < 16) {
-				regPanels[i].setStyleName("individualReg");
-				leftRegPanel.add(regPanels[i]);
+				leftXRegPanel.add(XRegPanels[i]);
 			} else {
-				rightRegPanel.add(regPanels[i]);
+				rightXRegPanel.add(XRegPanels[i]);
 			}
 		}
-		regFile.add(leftRegPanel);
-		regFile.add(rightRegPanel);
-		registerPanel = new VerticalPanel();
+		
+		for (int i=0; i<32; i++) {
+			DRegPanels[i] = new RegisterPanel(RegisterType.D, i);
+			DRegPanels[i].setStyleName("individualReg");
+			if (i < 16) {
+				leftDRegPanel.add(DRegPanels[i]);
+			} else {
+				rightDRegPanel.add(DRegPanels[i]);
+			}
+		}
+		
+		for (int i=0; i<32; i++) {
+			SRegPanels[i] = new RegisterPanel(RegisterType.S, i);
+			SRegPanels[i].setStyleName("individualReg");
+			if (i < 16) {
+				leftSRegPanel.add(SRegPanels[i]);
+			} else {
+				rightSRegPanel.add(SRegPanels[i]);
+			}
+		}
+		
+		regFile.add(leftXRegPanel);
+		regFile.add(rightXRegPanel);
+		regFile.add(leftDRegPanel);
+		regFile.add(rightDRegPanel);
+		regFile.add(leftSRegPanel);
+		regFile.add(rightSRegPanel);
+		
+		registerPanel = new HorizontalPanel();
 		registerPanel.addStyleName("registerPanel");
 		registerPanel.add(regFile);
+	}
+	
+	// Initialises the stack file part of the GUI, must be added to screen separately
+	private void initStackPanel() {
+		HorizontalPanel stackFile = new HorizontalPanel();
+		VerticalPanel leftStackPanel = new VerticalPanel();
+		VerticalPanel rightStackPanel = new VerticalPanel();
+		rightStackPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		for (int i=0; i<32; i++) {
+			stackPanels[i] = new StackPanel(Memory.STACK_BASE - i*8);
+			stackPanels[i].setStyleName("individualReg");
+			if (i < 16) {
+				leftStackPanel.add(stackPanels[i]);
+			} else {
+				rightStackPanel.add(stackPanels[i]);
+			}
+		}
+		stackFile.add(leftStackPanel);
+		stackFile.add(rightStackPanel);
+		stackPanel = new VerticalPanel();
+		stackPanel.addStyleName("registerPanel");
+		stackPanel.add(stackFile);
 	}
 	
 	// initialises the editor panel - contains the source code editor only
@@ -668,19 +770,53 @@ public class WebApp implements EntryPoint {
 	
 	// updates the register values in the GUI after an instruction has been executed
 	private void updateRegisterLabels(LEGv8_Simulator sim) {
-		for (int i=0; i<regPanels.length; i++) {
-			regPanels[i].update(sim.getCPURegister(i));
+		for (int i=0; i<XRegPanels.length; i++) {
+			XRegPanels[i].update(sim.getCPURegister(RegisterType.X, i));
+		}
+		
+		for (int i=0; i<DRegPanels.length; i++) {
+			DRegPanels[i].update(sim.getCPURegister(RegisterType.D, i));
+		}
+		
+		for (int i=0; i<SRegPanels.length; i++) {
+			SRegPanels[i].update(sim.getCPURegister(RegisterType.S, i));
 		}
 		pcPanel.update(sim.getPC());
 	}
 	
+	// updates the stack values in the GUI after an instruction has been executed
+		private void updateStackLabels(LEGv8_Simulator sim) {
+			for (int i=0; i<stackPanels.length; i++) {
+				try {
+					stackPanels[i].update(sim.getMemoryState().loadDoubleword(Memory.STACK_BASE - i*8));
+				} catch (SegmentFaultException e) {
+					continue;
+				}
+			}
+		}
+	
 	// resets the register values in the GUI to those prior to executing any instructions
 	private void resetRegisterPanel() {
-		for (int i=0; i<regPanels.length; i++) {
-			regPanels[i].reset(i);
+		for (int i=0; i<XRegPanels.length; i++) {
+			XRegPanels[i].reset(i);
+		}
+		
+		for (int i=0; i<DRegPanels.length; i++) {
+			DRegPanels[i].reset(i);
+		}
+		
+		for (int i=0; i<SRegPanels.length; i++) {
+			SRegPanels[i].reset(i);
 		}
 		pcPanel.reset(-1);
 	}
+	
+	// resets the stack values in the GUI to those prior to executing any instructions
+		private void resetStackPanel() {
+			for (int i=0; i<stackPanels.length; i++) {
+				stackPanels[i].reset(i);
+			}
+		}
 	
 	// updates the flag values in the GUI after an instruction has been executed
 	private void updateFlagLabels(LEGv8_Simulator sim) {
@@ -700,6 +836,7 @@ public class WebApp implements EntryPoint {
 		editor.removeAllMarkers();
 		updateRegisterLabels(singleCycleSim);
 		updateFlagLabels(singleCycleSim);
+		updateStackLabels(singleCycleSim);
 		compileErrors = singleCycleSim.getCompileErrorMsgs();
 		if (compileErrors.size() != 0) {
 			executeButt.setEnabled(false);
@@ -742,6 +879,7 @@ public class WebApp implements EntryPoint {
 		cpuLog.setText(singleCycleSim.getCpuLog());
 		updateRegisterLabels(singleCycleSim);
 		updateFlagLabels(singleCycleSim);
+		updateStackLabels(singleCycleSim);
 		if (visual) {
 			Timer t = new Timer() {
 				private double i = 100;
@@ -835,13 +973,39 @@ public class WebApp implements EntryPoint {
 	// panels
 	private VerticalPanel page;
 	private HorizontalPanel controlPanel;
-	private HorizontalPanel contentPanel;
+	private VerticalPanel contentPanel;
 	private VerticalPanel editorPanel;
-	private VerticalPanel registerPanel;
+	private HorizontalPanel registerPanel;
+	private VerticalPanel stackPanel;
 	private VerticalPanel leftContentPanel;
+	private VerticalPanel rightContentPanel;
 	private VerticalPanel datapathPanel;
 	private VerticalPanel debugPanel;
 	private VerticalPanel writingPanel;
+	
+	/*private VerticalPanel page;
+		private VerticalPanel headersPanel;
+			private HorizontalPanel controlPanel;
+		private VerticalPanel contentPanel;
+			private VerticalPanel visualizationPanel;
+				private HorizontalPanel editorAndPathPanel;
+					private HorizontalPanel editorPanel;
+					private HorizontalPanel datapathPanel;
+				private HorizontalPanel registersAndStackPanel;
+					private HorizontalPanel XRegisterPanel;
+						private VerticalPanel leftXRegisterPanel;
+						private VerticalPanel rightXRegisterPanel;
+					private HorizontalPanel DRegisterPanel;
+						private VerticalPanel leftDRegisterPanel;
+						private VerticalPanel rightDRegisterPanel;
+					private HorizontalPanel SRegisterPanel;
+						private VerticalPanel leftSRegisterPanel;
+						private VerticalPanel rightSRegisterPanel;
+					private HorizontalPanel stackPanel;
+						private VerticalPanel leftStackPanel;
+						private VerticalPanel rightStackPanel;
+			private VerticalPanel debugPanel;*/
+	
 	
 	private Label execModesLab;
 	private String currentExMode;
@@ -854,7 +1018,11 @@ public class WebApp implements EntryPoint {
 	private Button executeButt;
 	private Button assembleButt;
 	private Button helpButt;
-	private RegisterPanel[] regPanels = new RegisterPanel[32];
+	//private RegisterPanel[] regPanels = new RegisterPanel[32];
+	private RegisterPanel[] XRegPanels = new RegisterPanel[32];
+	private RegisterPanel[] DRegPanels = new RegisterPanel[32];
+	private RegisterPanel[] SRegPanels = new RegisterPanel[32];
+	private StackPanel[] stackPanels = new StackPanel[32];
 	private CPSRPanel cpsrPanel;
 	private RegisterPanel pcPanel;
 	private SingleCycleSimulator singleCycleSim;

@@ -17,16 +17,22 @@ public enum ParserState {
 		@Override
         public ParserState transition(Token t) throws UnsupportedInstructionException {
             switch (t.getType()) {
-            	case MNEMONIC_R : return R1;
-            	case MNEMONIC_RR : return RR1;
-            	case MNEMONIC_RRR : return RRR1;
-            	case MNEMONIC_RI : return RI1;
-            	case MNEMONIC_RRI : return RRI1;
-            	case MNEMONIC_RM : return RM1;
-            	case MNEMONIC_RRM : return RRM1;
-            	case MNEMONIC_RISI : return RISI1;
+            	case XMNEMONIC_R : return XR1;
+            	case XMNEMONIC_RR : return XRR1;
+            	case SMNEMONIC_RR : return SRR1;
+            	case DMNEMONIC_RR : return DRR1;
+            	case XMNEMONIC_RRR : return XRRR1;
+            	case SMNEMONIC_RRR : return SRRR1;
+            	case DMNEMONIC_RRR : return DRRR1;
+            	case XMNEMONIC_RI : return XRI1;
+            	case XMNEMONIC_RRI : return XRRI1;
+            	case XMNEMONIC_RM : return XRM1;
+            	case SMNEMONIC_RM : return SRM1;
+            	case DMNEMONIC_RM : return DRM1;
+            	case XMNEMONIC_RRM : return XRRM1;
+            	case XMNEMONIC_RISI : return XRISI1;
             	case MNEMONIC_L : return L1;
-            	case MNEMONIC_RL : return RL1;
+            	case XMNEMONIC_RL : return XRL1;
             	case LABEL : return G1;
             	default : throw new UnsupportedInstructionException(INIT);
             }
@@ -35,102 +41,168 @@ public enum ParserState {
     G1(true, null) { @Override
     	public ParserState transition(Token t) throws UnsupportedInstructionException {
             switch (t.getType()) {
-            	case MNEMONIC_R : return R1;
-            	case MNEMONIC_RR : return RR1;
-            	case MNEMONIC_RRR : return RRR1;
-            	case MNEMONIC_RI : return RI1;
-            	case MNEMONIC_RRI : return RRI1;
-            	case MNEMONIC_RM : return RM1;
-            	case MNEMONIC_RRM : return RRM1;
-            	case MNEMONIC_RISI : return RISI1;
+            	case XMNEMONIC_R : return XR1;
+            	case XMNEMONIC_RR : return XRR1;
+            	case SMNEMONIC_RR : return SRR1;
+            	case DMNEMONIC_RR : return DRR1;
+            	case XMNEMONIC_RRR : return XRRR1;
+            	case SMNEMONIC_RRR : return SRRR1;
+            	case DMNEMONIC_RRR : return DRRR1;
+            	case XMNEMONIC_RI : return XRI1;
+            	case XMNEMONIC_RRI : return XRRI1;
+            	case XMNEMONIC_RM : return XRM1;
+            	case SMNEMONIC_RM : return SRM1;
+            	case DMNEMONIC_RM : return DRM1;
+            	case XMNEMONIC_RRM : return XRRM1;
+            	case XMNEMONIC_RISI : return XRISI1;
             	case MNEMONIC_L : return L1;
-            	case MNEMONIC_RL : return RL1;
+            	case XMNEMONIC_RL : return XRL1;
             	default : throw new UnsupportedInstructionException(G1);
             }
         }
     },
-    R1(false, new TokenType[]{TokenType.REGISTER}) { @Override
+    XR1(false, new TokenType[]{TokenType.XREGISTER}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case REGISTER : return R2;
+            	case 		XREGISTER : return XR2;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    R2(true, null) { @Override
+    XR2(true, null) { @Override
     	public ParserState transition(Token t) throws UnexpectedTokenException {
             throw new UnexpectedTokenException();
         }
     },
-    RR1(false, new TokenType[]{TokenType.REGISTER, TokenType.COMMA, 
-    		TokenType.REGISTER}) { @Override
+    XRR1(false, new TokenType[]{TokenType.XREGISTER, TokenType.COMMA, 
+    		TokenType.XREGISTER}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case REGISTER : return RR2;
+            	case XREGISTER : return XRR2;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RR2(false, new TokenType[]{TokenType.COMMA, TokenType.REGISTER}) { @Override
+    XRR2(false, new TokenType[]{TokenType.COMMA, TokenType.XREGISTER}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
-            switch (t.getType()) {
-            	case COMMA : return RR3;
+            switch (t.getType()) {	
+            	case COMMA : return XRR3;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RR3(false, new TokenType[]{TokenType.REGISTER}) { @Override
+    XRR3(false, new TokenType[]{TokenType.XREGISTER}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case REGISTER : return RR4;
+            	case XREGISTER : return XRR4;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RR4(true, null) { @Override
+    XRR4(true, null) { @Override
     	public ParserState transition(Token t) throws UnexpectedTokenException {
             throw new UnexpectedTokenException();
         }
     },
-    RRR1(false, new TokenType[]{TokenType.REGISTER, TokenType.COMMA, 
-    		TokenType.REGISTER, TokenType.COMMA, TokenType.REGISTER}) { @Override
+    SRR1(false, new TokenType[]{TokenType.SREGISTER, TokenType.COMMA, 
+    		TokenType.SREGISTER}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case REGISTER : return RRR2;
+            	case SREGISTER : return SRR2;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RRR2(false, new TokenType[]{TokenType.COMMA, TokenType.REGISTER, 
-    		TokenType.COMMA, TokenType.REGISTER}) { @Override
+    SRR2(false, new TokenType[]{TokenType.COMMA, TokenType.SREGISTER}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
-            switch (t.getType()) {
-            	case COMMA : return RRR3;
+            switch (t.getType()) {	
+            	case COMMA : return SRR3;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RRR3(false, new TokenType[]{TokenType.REGISTER, TokenType.COMMA, 
-    		TokenType.REGISTER}) { @Override
+    SRR3(false, new TokenType[]{TokenType.SREGISTER}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case REGISTER : return RRR4;
+            	case SREGISTER : return SRR4;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RRR4(false, new TokenType[]{TokenType.COMMA, TokenType.REGISTER}) { @Override
+    SRR4(true, null) { @Override
+    	public ParserState transition(Token t) throws UnexpectedTokenException {
+            throw new UnexpectedTokenException();
+        }
+    },
+    DRR1(false, new TokenType[]{TokenType.DREGISTER, TokenType.COMMA, 
+    		TokenType.DREGISTER}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case COMMA : return RRR5;
+            	case DREGISTER : return DRR2;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RRR5(false, new TokenType[]{TokenType.REGISTER}) { @Override
+    DRR2(false, new TokenType[]{TokenType.COMMA, TokenType.DREGISTER}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {	
+            	case COMMA : return DRR3;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    DRR3(false, new TokenType[]{TokenType.DREGISTER}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case REGISTER : return RRR6;
+            	case DREGISTER : return DRR4;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    DRR4(true, null) { @Override
+    	public ParserState transition(Token t) throws UnexpectedTokenException {
+            throw new UnexpectedTokenException();
+        }
+    },
+    XRRR1(false, new TokenType[]{TokenType.XREGISTER, TokenType.COMMA, 
+    		TokenType.XREGISTER, TokenType.COMMA, TokenType.XREGISTER}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {
+            	case XREGISTER : return XRRR2;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    XRRR2(false, new TokenType[]{TokenType.COMMA, TokenType.XREGISTER, 
+    		TokenType.COMMA, TokenType.XREGISTER}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {
+            	case COMMA : return XRRR3;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    XRRR3(false, new TokenType[]{TokenType.XREGISTER, TokenType.COMMA, 
+    		TokenType.XREGISTER}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {
+            	case XREGISTER : return XRRR4;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    XRRR4(false, new TokenType[]{TokenType.COMMA, TokenType.XREGISTER}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {
+            	case COMMA : return XRRR5;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    XRRR5(false, new TokenType[]{TokenType.XREGISTER}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {
+            	case XREGISTER : return RRR6;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
@@ -140,95 +212,201 @@ public enum ParserState {
             throw new UnexpectedTokenException();
         }
     },
-    RI1(false, new TokenType[]{TokenType.REGISTER, TokenType.COMMA, 
+    SRRR1(false, new TokenType[]{TokenType.SREGISTER, TokenType.COMMA, 
+    		TokenType.SREGISTER, TokenType.COMMA, TokenType.SREGISTER}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {
+            	case SREGISTER : return SRRR2;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    SRRR2(false, new TokenType[]{TokenType.COMMA, TokenType.SREGISTER, 
+    		TokenType.COMMA, TokenType.SREGISTER}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {
+            	case COMMA : return SRRR3;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    SRRR3(false, new TokenType[]{TokenType.SREGISTER, TokenType.COMMA, 
+    		TokenType.SREGISTER}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {
+            	case SREGISTER : return SRRR4;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    SRRR4(false, new TokenType[]{TokenType.COMMA, TokenType.SREGISTER}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {
+            	case COMMA : return SRRR5;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    SRRR5(false, new TokenType[]{TokenType.SREGISTER}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {
+            	case SREGISTER : return RRR6;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    DRRR1(false, new TokenType[]{TokenType.DREGISTER, TokenType.COMMA, 
+    		TokenType.DREGISTER, TokenType.COMMA, TokenType.DREGISTER}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {
+            	case DREGISTER : return DRRR2;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    DRRR2(false, new TokenType[]{TokenType.COMMA, TokenType.DREGISTER, 
+    		TokenType.COMMA, TokenType.DREGISTER}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {
+            	case COMMA : return DRRR3;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    DRRR3(false, new TokenType[]{TokenType.DREGISTER, TokenType.COMMA, 
+    		TokenType.DREGISTER}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {
+            	case DREGISTER : return DRRR4;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    DRRR4(false, new TokenType[]{TokenType.COMMA, TokenType.DREGISTER}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {
+            	case COMMA : return DRRR5;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    DRRR5(false, new TokenType[]{TokenType.DREGISTER}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {
+            	case DREGISTER : return RRR6;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    XRI1(false, new TokenType[]{TokenType.XREGISTER, TokenType.COMMA, 
     		TokenType.IMMEDIATE}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case REGISTER : return RI2;
+            	case XREGISTER : return XRI2;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RI2(false, new TokenType[]{TokenType.COMMA, TokenType.IMMEDIATE}) { @Override
+    XRI2(false, new TokenType[]{TokenType.COMMA, TokenType.IMMEDIATE}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case COMMA : return RI3;
+            	case COMMA : return XRI3;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RI3(false, new TokenType[]{TokenType.IMMEDIATE}) { @Override
+    XRI3(false, new TokenType[]{TokenType.IMMEDIATE}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case IMMEDIATE : return RI4;
+            	case IMMEDIATE : return XRI4;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RI4(true, null) { @Override
+    XRI4(true, null) { @Override
     	public ParserState transition(Token t) throws UnexpectedTokenException {
             throw new UnexpectedTokenException();
         }
     },
-    RRI1(false, new TokenType[]{TokenType.REGISTER, TokenType.COMMA, 
-    		TokenType.REGISTER, TokenType.COMMA, TokenType.IMMEDIATE}) { @Override
+    XRRI1(false, new TokenType[]{TokenType.XREGISTER, TokenType.COMMA, 
+    		TokenType.XREGISTER, TokenType.COMMA, TokenType.IMMEDIATE}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case REGISTER : return RRI2;
+            	case XREGISTER : return XRRI2;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RRI2(false, new TokenType[]{TokenType.COMMA, TokenType.REGISTER, 
+    XRRI2(false, new TokenType[]{TokenType.COMMA, TokenType.XREGISTER, 
     		TokenType.COMMA, TokenType.IMMEDIATE}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case COMMA : return RRI3;
+            	case COMMA : return XRRI3;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RRI3(false, new TokenType[]{TokenType.REGISTER, TokenType.COMMA, 
+    XRRI3(false, new TokenType[]{TokenType.XREGISTER, TokenType.COMMA, 
     		TokenType.IMMEDIATE}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case REGISTER : return RRI4;
+            	case XREGISTER : return XRRI4;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RRI4(false, new TokenType[]{TokenType.COMMA, TokenType.IMMEDIATE}) { @Override
+    XRRI4(false, new TokenType[]{TokenType.COMMA, TokenType.IMMEDIATE}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case COMMA : return RRI5;
+            	case COMMA : return XRRI5;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RRI5(false, new TokenType[]{TokenType.IMMEDIATE}) { @Override
+    XRRI5(false, new TokenType[]{TokenType.IMMEDIATE}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case IMMEDIATE : return RRI6;
+            	case IMMEDIATE : return XRRI6;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RRI6(true, null) { @Override
+    XRRI6(true, null) { @Override
     	public ParserState transition(Token t) throws UnexpectedTokenException {
             throw new UnexpectedTokenException();
         }
     },
-    RM1(false, new TokenType[]{TokenType.REGISTER, TokenType.COMMA, 
-    		TokenType.LBRACKET, TokenType.REGISTER, TokenType.COMMA, 
+    XRM1(false, new TokenType[]{TokenType.XREGISTER, TokenType.COMMA, 
+    		TokenType.LBRACKET, TokenType.XREGISTER, TokenType.COMMA, 
     		TokenType.IMMEDIATE, TokenType.RBRACKET}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case REGISTER : return RM2;
+            	case XREGISTER : return RM2;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RM2(false, new TokenType[]{TokenType.COMMA, TokenType.LBRACKET, TokenType.REGISTER, 
+    SRM1(false, new TokenType[]{TokenType.SREGISTER, TokenType.COMMA, 
+    		TokenType.LBRACKET, TokenType.XREGISTER, TokenType.COMMA, 
+    		TokenType.IMMEDIATE, TokenType.RBRACKET}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {
+            	case SREGISTER : return RM2;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    DRM1(false, new TokenType[]{TokenType.DREGISTER, TokenType.COMMA, 
+    		TokenType.LBRACKET, TokenType.XREGISTER, TokenType.COMMA, 
+    		TokenType.IMMEDIATE, TokenType.RBRACKET}) { @Override
+    	public ParserState transition(Token t) throws InvalidTokenException {
+            switch (t.getType()) {
+            	case DREGISTER : return RM2;
+            	default : throw new InvalidTokenException(expected[0]);
+            }
+        }
+    },
+    RM2(false, new TokenType[]{TokenType.COMMA, TokenType.LBRACKET, TokenType.XREGISTER, 
     		TokenType.COMMA, TokenType.IMMEDIATE, TokenType.RBRACKET}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
@@ -237,7 +415,7 @@ public enum ParserState {
             }
         }
     },
-    RM3(false, new TokenType[]{TokenType.LBRACKET, TokenType.REGISTER, 
+    RM3(false, new TokenType[]{TokenType.LBRACKET, TokenType.XREGISTER, 
     		TokenType.COMMA, TokenType.IMMEDIATE, TokenType.RBRACKET}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
@@ -246,11 +424,11 @@ public enum ParserState {
             }
         }
     },
-    RM4(false, new TokenType[]{TokenType.REGISTER, TokenType.COMMA, 
+    RM4(false, new TokenType[]{TokenType.XREGISTER, TokenType.COMMA, 
     		TokenType.IMMEDIATE, TokenType.RBRACKET}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case REGISTER : return RM5;
+            	case XREGISTER : return RM5;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
@@ -286,135 +464,135 @@ public enum ParserState {
             }
         }
     },
-    RRM1(false, new TokenType[]{TokenType.REGISTER, TokenType.COMMA, TokenType.REGISTER, 
-    		TokenType.COMMA, TokenType.LBRACKET, TokenType.REGISTER, TokenType.COMMA, 
+    XRRM1(false, new TokenType[]{TokenType.XREGISTER, TokenType.COMMA, TokenType.XREGISTER, 
+    		TokenType.COMMA, TokenType.LBRACKET, TokenType.XREGISTER, TokenType.COMMA, 
     		TokenType.IMMEDIATE, TokenType.RBRACKET}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case REGISTER : return RRM2;
+            	case XREGISTER : return XRRM2;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RRM2(false, new TokenType[]{TokenType.COMMA, TokenType.REGISTER, 
-    		TokenType.COMMA, TokenType.LBRACKET, TokenType.REGISTER, 
+    XRRM2(false, new TokenType[]{TokenType.COMMA, TokenType.XREGISTER, 
+    		TokenType.COMMA, TokenType.LBRACKET, TokenType.XREGISTER, 
     		TokenType.COMMA, TokenType.IMMEDIATE, TokenType.RBRACKET}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case COMMA : return RRM3;
+            	case COMMA : return XRRM3;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RRM3(false, new TokenType[]{TokenType.REGISTER, TokenType.COMMA, 
-    		TokenType.LBRACKET, TokenType.REGISTER, TokenType.COMMA, 
+    XRRM3(false, new TokenType[]{TokenType.XREGISTER, TokenType.COMMA, 
+    		TokenType.LBRACKET, TokenType.XREGISTER, TokenType.COMMA, 
     		TokenType.IMMEDIATE, TokenType.RBRACKET}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case REGISTER : return RRM4;
+            	case XREGISTER : return XRRM4;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RRM4(false, new TokenType[]{TokenType.COMMA, TokenType.LBRACKET, TokenType.REGISTER, 
+    XRRM4(false, new TokenType[]{TokenType.COMMA, TokenType.LBRACKET, TokenType.XREGISTER, 
     		TokenType.COMMA, TokenType.IMMEDIATE, TokenType.RBRACKET}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case COMMA : return RRM5;
+            	case COMMA : return XRRM5;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RRM5(false, new TokenType[]{TokenType.LBRACKET, TokenType.REGISTER, 
+    XRRM5(false, new TokenType[]{TokenType.LBRACKET, TokenType.XREGISTER, 
     		TokenType.COMMA, TokenType.IMMEDIATE, TokenType.RBRACKET}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case LBRACKET : return RRM6;
+            	case LBRACKET : return XRRM6;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RRM6(false, new TokenType[]{TokenType.REGISTER, TokenType.COMMA, 
+    XRRM6(false, new TokenType[]{TokenType.XREGISTER, TokenType.COMMA, 
     		TokenType.IMMEDIATE, TokenType.RBRACKET}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case REGISTER : return RRM7;
+            	case XREGISTER : return XRRM7;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RRM7(false, new TokenType[]{TokenType.COMMA, TokenType.IMMEDIATE, 
+    XRRM7(false, new TokenType[]{TokenType.COMMA, TokenType.IMMEDIATE, 
     		TokenType.RBRACKET}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case RBRACKET : return RRM8;
-            	case COMMA : return RRM9;
+            	case RBRACKET : return XRRM8;
+            	case COMMA : return XRRM9;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RRM8(true, null) { @Override
+    XRRM8(true, null) { @Override
     	public ParserState transition(Token t) throws UnexpectedTokenException {
             throw new UnexpectedTokenException();
         }
     },
-    RRM9(false, new TokenType[]{TokenType.IMMEDIATE, TokenType.RBRACKET}) { @Override
+    XRRM9(false, new TokenType[]{TokenType.IMMEDIATE, TokenType.RBRACKET}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case IMMEDIATE : return RRM10;
+            	case IMMEDIATE : return XRRM10;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RRM10(false, new TokenType[]{TokenType.RBRACKET}) { @Override
+    XRRM10(false, new TokenType[]{TokenType.RBRACKET}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case RBRACKET : return RRM8;
+            	case RBRACKET : return XRRM8;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RISI1(false, new TokenType[]{TokenType.REGISTER, TokenType.COMMA, TokenType.IMMEDIATE, 
-    		TokenType.COMMA, TokenType.MNEMONIC_RRI, TokenType.IMMEDIATE}) { @Override
+    XRISI1(false, new TokenType[]{TokenType.XREGISTER, TokenType.COMMA, TokenType.IMMEDIATE, 
+    		TokenType.COMMA, TokenType.XMNEMONIC_RRI, TokenType.IMMEDIATE}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case REGISTER : return RISI2;
+            	case XREGISTER : return XRISI2;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RISI2(false, new TokenType[]{TokenType.COMMA, TokenType.IMMEDIATE, 
-    		TokenType.COMMA, TokenType.MNEMONIC_RRI, TokenType.IMMEDIATE}) { @Override
+    XRISI2(false, new TokenType[]{TokenType.COMMA, TokenType.IMMEDIATE, 
+    		TokenType.COMMA, TokenType.XMNEMONIC_RRI, TokenType.IMMEDIATE}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case COMMA : return RISI3;
+            	case COMMA : return XRISI3;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RISI3(false, new TokenType[]{TokenType.IMMEDIATE, TokenType.COMMA, 
-    		TokenType.MNEMONIC_RRI, TokenType.IMMEDIATE}) { @Override
+    XRISI3(false, new TokenType[]{TokenType.IMMEDIATE, TokenType.COMMA, 
+    		TokenType.XMNEMONIC_RRI, TokenType.IMMEDIATE}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case IMMEDIATE : return RISI4;
+            	case IMMEDIATE : return XRISI4;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RISI4(true, new TokenType[]{TokenType.COMMA, TokenType.MNEMONIC_RRI, TokenType.IMMEDIATE}) { @Override
+    XRISI4(true, new TokenType[]{TokenType.COMMA, TokenType.XMNEMONIC_RRI, TokenType.IMMEDIATE}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case COMMA : return RISI5;
+            	case COMMA : return XRISI5;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RISI5(false, new TokenType[]{TokenType.MNEMONIC_RRI, TokenType.IMMEDIATE}) { @Override
+   XRISI5(false, new TokenType[]{TokenType.XMNEMONIC_RRI, TokenType.IMMEDIATE}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case MNEMONIC_RRI : 
+            	case XMNEMONIC_RRI : 
             		if (t.getData().trim().equalsIgnoreCase("lsl") && !t.getData().trim().equals(t.getData())) {
-            			return RISI6;
+            			return XRISI6;
             		} else {
             			throw new InvalidTokenException(expected[0], Mnemonic.LSL);
             		}
@@ -422,15 +600,15 @@ public enum ParserState {
             }
         }
     },
-    RISI6(false, new TokenType[]{TokenType.IMMEDIATE}) { @Override
+    XRISI6(false, new TokenType[]{TokenType.IMMEDIATE}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case IMMEDIATE : return RISI7;
+            	case IMMEDIATE : return XRISI7;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RISI7(true, null) { @Override
+    XRISI7(true, null) { @Override
     	public ParserState transition(Token t) throws UnexpectedTokenException {
             throw new UnexpectedTokenException();
         }
@@ -448,35 +626,35 @@ public enum ParserState {
             throw new UnexpectedTokenException();
         }
     },
-    L3(true, null) { @Override
+    /*L3(true, null) { @Override											// THIS SEEMS TO BE AN UNREACHABLE LOOP?	
     	public ParserState transition(Token t) { return L3; }
-    },
-    RL1(false, new TokenType[]{TokenType.REGISTER, TokenType.COMMA, 
+    },*/
+    XRL1(false, new TokenType[]{TokenType.XREGISTER, TokenType.COMMA, 
     		TokenType.IDENTIFIER}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case REGISTER : return RL2;
+            	case XREGISTER : return XRL2;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RL2(false, new TokenType[]{TokenType.COMMA, TokenType.IDENTIFIER}) { @Override
+    XRL2(false, new TokenType[]{TokenType.COMMA, TokenType.IDENTIFIER}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case COMMA : return RL3;
+            	case COMMA : return XRL3;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RL3(false, new TokenType[]{TokenType.IDENTIFIER}) { @Override
+    XRL3(false, new TokenType[]{TokenType.IDENTIFIER}) { @Override
     	public ParserState transition(Token t) throws InvalidTokenException {
             switch (t.getType()) {
-            	case IDENTIFIER : return RL4;
+            	case IDENTIFIER : return XRL4;
             	default : throw new InvalidTokenException(expected[0]);
             }
         }
     },
-    RL4(true, null) { @Override
+    XRL4(true, null) { @Override
     	public ParserState transition(Token t) throws UnexpectedTokenException {
             throw new UnexpectedTokenException();
         }
