@@ -12,10 +12,22 @@ h1 {
 }
 
 .registerPanel {
-    padding-left: 0px;
+    padding-left: 5px;
     padding-right: 5px;
-    padding-top: 10px;
+    padding-top: 5px;
     padding-bottom: 0px;
+}
+
+.stackPanel {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 0px;
+}
+
+.gwt-Label { 
+font-family: monospace;
+font-size: small;
 }
 
 .editorPanel {
