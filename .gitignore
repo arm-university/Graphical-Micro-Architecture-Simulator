@@ -37,4 +37,4 @@ build/
 ### Mac OS ###
 .DS_Store
 
-LEGv8_Simulator/LEGv8_Simulator-client/target
+LEGv8_Simulator/target
