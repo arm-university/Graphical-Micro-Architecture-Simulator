@@ -11,7 +11,7 @@ The Graphical Micro-Architecture Simulator is a web browser-based simulator for 
 * Added a visualization for the stack and for the floating point registers. Reorganized the UI to best fit the new additions.
 * The project and the AceGWT library have been updated to use GWT 2.11.0
 
-This effort has been made in the context of the **_Digital Systems Architectures_** course held at the **_Department of Engineering and Architecture_** at the **_[University of Trieste](https://www.units.it/en)_** under the guidance of _**Prof. Alberto Carini**_ .
+This effort has been made as a Computer Engineering bachelor's thesis in the context of the **_Digital Systems Architectures_** course held at the **_Department of Engineering and Architecture_** at the **_[University of Trieste](https://www.units.it/en)_** under the guidance of _**Prof. Alberto Carini**_ .
 
 
 ## How to develop and package the project
