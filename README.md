@@ -6,6 +6,7 @@
 * Fixed the behaviour of the BL instruction, branch and links work correctly now
 * Fixed the behaviour of the SUBS instructions, compares and conditional branches seem to work correctly now
 * Added the MUL instruction following the Patterson specification
+* Integrated the project with Maven in order to make importing, configuration and development effortless
 
 This effort has been made in the context of the **_Digital Systems Architectures_** course held at the **_Department of Engineering and Architecture_** at the **_[University of Trieste](https://www.units.it/en)_** under the guidance of _**Prof. Alberto Carini**_ . 
 
