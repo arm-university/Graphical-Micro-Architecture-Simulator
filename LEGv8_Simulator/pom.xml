@@ -12,7 +12,6 @@
     <artifactId>LEGv8_Simulator</artifactId>
     <packaging>gwt-app</packaging>
     <properties>
-        <acegwt-systemPath>/home/in0500499/git/LEGv8-Simulator/LEGv8_Simulator/local-maven-repo/acegwt-1.3.3.jar</acegwt-systemPath>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencyManagement>
@@ -40,7 +39,7 @@
             <artifactId>acegwt</artifactId>
             <version>1.3.3</version>
             <scope>system</scope>
-            <systemPath>${acegwt-systemPath}</systemPath>
+            <systemPath>${project.basedir}/local-maven-repo/acegwt-1.3.3.jar</systemPath>
         </dependency>
     </dependencies>
     <build>
@@ -75,6 +74,26 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>3.3.1</version>
+                    <executions>
+                        <execution>
+                            <!-- Allows for the copy of the contents of the web-resources folder into the target folder
+                            after the compilation of the gwt project has ended. Without this the compiled website doesn't have
+                             a home page, the css resources and the images -->
+                            <id>copy-web-resources</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.build.directory}/LEGv8_Simulator-${version}</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>src/main/web-resources</directory>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
