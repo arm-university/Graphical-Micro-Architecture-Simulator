@@ -1,7 +1,7 @@
 package com.arm.legv8simulator.client.cpu;
 
 /**
- * <code>CPUSnpashot</code> provides a deep copy of the <code>CPU</code> state for use in the pipeline simulator.
+ * <code>CPUSnapshot</code> provides a deep copy of the <code>CPU</code> state for use in the pipeline simulator.
  * 
  * @see CPU
  * 
@@ -14,7 +14,7 @@ public class CPUSnapshot {
 	 */
 	public CPUSnapshot(CPU cpu) {
 		for (int i=0; i<registerFile.length; i++) {
-			registerFile[i] = cpu.getRegister(i);
+			registerFile[i] = cpu.getRegister(RegisterType.X, i);
 		}
 		Nflag = cpu.getNflag();
 		Zflag = cpu.getZflag();
