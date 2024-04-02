@@ -1,6 +1,8 @@
 package com.arm.legv8simulator.client;
 
 import com.arm.legv8simulator.client.cpu.CPU;
+import com.arm.legv8simulator.client.cpu.RegisterType;
+import com.arm.legv8simulator.client.memory.Memory;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -20,16 +22,20 @@ public class RegisterPanel extends HorizontalPanel {
 	 * 
 	 * @param reg	the register number. E.g. 15 for register X15
 	 */
-	public RegisterPanel(int reg) {
+	public RegisterPanel(RegisterType type, int reg) {
 		this.setHeight("20px");
 		this.setWidth("250px");
-		if (reg == CPU.SP) {
-			regValue = 0x7fffffff80L;	// quadword aligned stack base to avoid manual adjustment every time (could break something, only done for convenience), SIMONE.DEIANA@studenti.units.it
-		} else if (reg == -1) {
-			regValue = 0x400000;
+		
+		if (type == RegisterType.X && reg == CPU.SP) {
+			regValue = Memory.STACK_BASE;	
+			} else if (type == RegisterType.X && reg == -1) {
+			regValue = Memory.TEXT_SEGMENT_OFFSET;
 		} else {
 			regValue = 0;
 		}
+		
+		this.regType = type;
+		
 		hex = true;
 		registerPanel = new HorizontalPanel();
 		registerPanel.setHorizontalAlignment(ALIGN_CENTER);
@@ -78,14 +84,20 @@ public class RegisterPanel extends HorizontalPanel {
 	}
 	
 	private String getRegStr(int reg) {
-		switch (reg) {
-		case CPU.FP : return "FP";
-		case CPU.SP : return "SP";
-		case CPU.LR : return "LR";
-		case CPU.XZR : return "XZR";
-		case -1 : return "PC";
-		default : return "X" + reg;
+		
+		if(this.regType == RegisterType.X) {
+			switch (reg) {
+			case CPU.FP : return "FP";
+			case CPU.SP : return "SP";
+			case CPU.LR : return "LR";
+			case CPU.XZR : return "XZR";
+			case -1 : return "PC";
+			default : break;
+			}
 		}
+		
+		return this.regType.name() + String.valueOf(reg);
+		
 	}
 	
 	/**
@@ -116,10 +128,10 @@ public class RegisterPanel extends HorizontalPanel {
 	 * @param reg	the number of this register. E.g. 10 for X10
 	 */
 	public void reset(int reg) {
-		if (reg == 28) {
-			regValue = Long.decode("0x7fffffff80"); // quadword aligned stack base to avoid manual adjustment every time (could break something, only done for convenience), SIMONE.DEIANA@studenti.units.it
-		} else if (reg == -1) {
-			regValue = Long.decode("0x400000");
+		if (this.regType == RegisterType.X && reg == 28) {
+			regValue = Memory.STACK_BASE; // quadword aligned stack base to avoid manual adjustment every time (could break something, only done for convenience), SIMONE.DEIANA@studenti.units.it
+		} else if (this.regType == RegisterType.X && reg == -1) {
+			regValue = Memory.TEXT_SEGMENT_OFFSET;
 		} else {
 			regValue = 0;
 		}
@@ -133,7 +145,12 @@ public class RegisterPanel extends HorizontalPanel {
 	}
 	
 	private String convertToDecimal() {
-		return Long.toString(regValue);
+		switch(this.regType) {
+		case X: return Long.toString(regValue);
+		case D: return Double.toString(Double.longBitsToDouble(regValue));
+		case S: return Float.toString(Float.intBitsToFloat((int) regValue));
+		default: return "";
+		}
 	}
 	
 	private String convertToHex() {
@@ -152,6 +169,7 @@ public class RegisterPanel extends HorizontalPanel {
 	
 	
 	private long regValue;
+	private RegisterType regType;
 	private HorizontalPanel registerPanel;
 	private HorizontalPanel regValuePanel;
 	private Label valueLab;
