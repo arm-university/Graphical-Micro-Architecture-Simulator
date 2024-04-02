@@ -57,7 +57,7 @@
                         <arg>-noserver</arg>
                     </devmodeArgs>
 
-                    <moduleName>com.arm.legv8simulator.client.WebApp</moduleName>
+                    <moduleName>com.arm.legv8simulator.LEGv8_Simulator</moduleName>
                 </configuration>
             </plugin>
         </plugins>
