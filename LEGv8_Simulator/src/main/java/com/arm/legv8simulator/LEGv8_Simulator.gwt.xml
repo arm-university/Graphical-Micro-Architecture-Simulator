@@ -5,7 +5,7 @@
 -->
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.11.0//EN"
         "http://gwtproject.org/doctype/2.11.0/gwt-module.dtd">
-<module rename-to='legv8_simulator'>
+<module rename-to='LEGv8_Simulator'>
     <!-- Inherit the core Web Toolkit stuff.                        -->
     <inherits name='com.google.gwt.user.User'/>
 
