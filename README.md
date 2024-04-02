@@ -1,6 +1,8 @@
 
 # Graphical-Micro-Architecture-Simulator
 
+The Graphical Micro-Architecture Simulator is a web browser-based simulator for a subset of the Arm instructions. Specifically, this tool provides the expected execution results for the LEGv8 instructions, which is a subset of Arm®v8-A instructions based on the [Computer Organization and Design (Arm Edition)](https://www.elsevier.com/books/computer-organization-and-design-arm-edition/patterson/978-0-12-801733-3) textbook by David A. Patterson & John L. Hennessy. This simulator can be run locally on a PC, and is offered exclusively and at no cost to academics, teaching staff, and learners worldwide.
+
 ## What has been added to this forked version
 
 * **Integrated all the instructions of the LEGv8 ISA**, including the floating point operations.
@@ -9,25 +11,36 @@
 * Added a visualization for the stack and for the floating point registers. Reorganized the UI to best fit the new additions.
 * The project and the AceGWT library have been updated to use GWT 2.11.0
 
+This effort has been made in the context of the **_Digital Systems Architectures_** course held at the **_Department of Engineering and Architecture_** at the **_[University of Trieste](https://www.units.it/en)_** under the guidance of _**Prof. Alberto Carini**_ .
+
+
 ## How to develop and package the project
-You can import this Maven project with your favorite Java IDE that supports git cloning and Maven projects (or you can do everything manually with the individual command line utilities). To just compile the sources you run the gwt:compile Maven action inside the LEGv8_Simulator folder.
-To package the application with the web resources (images, .css files, .html files, etc.) you need to run the "package" action inside the aforementioned folder. This will do both the compilation and the correct moving of the web resources, so it's the recommended action to execute in general.
-If you use an IDE these steps might be made easier by the means of UI elements. Use the command line only if you already know how Maven works.
-GWT only implements a subset of the Java 8 JRE, this means you need to limit your syntax to this version.
+You can import this Maven project with your favorite Java IDE that supports git and Maven projects (or you can do everything manually
+with the individual command line utilities). To simply compile the sources you need to run the _gwt:compile_ Maven action inside the LEGv8_Simulator folder.
+To package the application with the web resources (images, .css files, .html files, etc.) you need to run the **`package`** action inside the aforementioned folder.
+ This will do both the compilation and the correct moving of the web resources, so it's the recommended action to execute in general 
+(depending on the IDE used the `package` action might not be shown and needs to be added as a custom maven action).
+If you use an IDE these steps might be made easier by the means of UI elements. Use the command line only if you already know how Maven works
+or if you are using a text editor which does not support Maven.
+
+**GWT only implements a subset of the Java 8 JRE, this means you need to limit your syntax to this version and not every
+feature might be usable.**
+
 ### IntelliJ IDEA
 IntelliJ Ultimate offers a GWT plugin that warns the programmer when using methods, syntax and classes not implemented by GWT and can generate compile reports.
-Be warned that in some cases it might show bogous errors (for example it doesn't recognize the .css resource so it gives errors when mentioning its directives in the code) but this shouldn't affect the compilation which is done with GWT.
-This is the suggested working environment because its modern features and integrations.
+Be warned that in some cases it might show bogous errors (such as missing css directives), 
+but this shouldn't affect the compilation which is done with GWT.
+If you use IntelliJ without this plugin the errors will disappear but you will not have access to said features.
+IntelliJ Community/Ultimate is the recommended IDE to use thanks to its modern features and integration.
 ### Eclipse
-Eclipse offers a GWT plugin (which has installation problems with Eclipse version newer than the 2023-09) that makes compilation easy but unlike the maven "package" action deploys the compiled sources into a "war" folder and doesn't automatically copy-paste the web resources needed to launch the web page. That has to be done manually.
-It is suggested to use the Maven actions with Eclipse, especially because this allows you to install the latest version of the IDE.
+Eclipse offers a GWT plugin (which has installation problems with Eclipse version newer than the 2023-09) that makes compilation easier 
+but unlike the Maven `package` action deploys the compiled sources into a "war" folder and doesn't automatically copy-paste the web 
+resources needed to launch the web page. That has to be done manually.
+It is suggested to use the Maven actions with Eclipse (either externally through the
+ command line or using the Maven integration in Eclipse), especially because this allows you to use the latest version of the IDE.
 ### Command Line
 You can download, develop, build and package this project using git and maven from the command line together with your favorite IDE or text editor.
-To do this you simply git clone the repository, set it up using maven, make your changes and generate a working package as written above.
-
-This effort has been made in the context of the **_Digital Systems Architectures_** course held at the **_Department of Engineering and Architecture_** at the **_[University of Trieste](https://www.units.it/en)_** under the guidance of _**Prof. Alberto Carini**_ . 
-
-The Graphical Micro-Architecture Simulator is a web browser-based simulator for a subset of the Arm instructions. Specifically, this tool provides the expected execution results for the LEGv8 instructions, which is a subset of Arm®v8-A instructions based on the [Computer Organization and Design (Arm Edition)](https://www.elsevier.com/books/computer-organization-and-design-arm-edition/patterson/978-0-12-801733-3) textbook by David A. Patterson & John L. Hennessy. This simulator can be run locally on a PC, and is offered exclusively and at no cost to academics, teaching staff, and learners worldwide. 
+To do this you simply git clone the repository, make your changes and generate a working package with `mvn package` executed inside the `LEGv8_Simulator` folder.
 
 **Note: This tool is currently a BETA version.**
 
