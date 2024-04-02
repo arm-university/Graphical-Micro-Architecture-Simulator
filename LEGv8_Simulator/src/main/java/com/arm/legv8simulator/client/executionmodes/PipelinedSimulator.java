@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.arm.legv8simulator.client.cpu.CPU;
 import com.arm.legv8simulator.client.cpu.CPUSnapshot;
 import com.arm.legv8simulator.client.cpu.ControlUnitConfiguration;
+import com.arm.legv8simulator.client.cpu.RegisterType;
 import com.arm.legv8simulator.client.instruction.Instruction;
 import com.arm.legv8simulator.client.instruction.Mnemonic;
 import com.arm.legv8simulator.client.instruction.PipelineInstruction;
@@ -139,7 +140,7 @@ public class PipelinedSimulator extends LEGv8_Simulator {
 				controlHazardStall = true;
 				pipelineLog.append("Control Hazard: Flushing pipeline \n");
 			} else if (pipeline[1].getInstruction().getMnemonic().type.equals(TokenType.MNEMONIC_L) || 
-					pipeline[1].getInstruction().getMnemonic().type.equals(TokenType.MNEMONIC_RL)) {
+					pipeline[1].getInstruction().getMnemonic().type.equals(TokenType.XMNEMONIC_RL)) {
 				if (pipeline[1].getBranchTaken()) {
 					controlHazardStall = true;
 					pipelineLog.append("Control Hazard: Flushing pipeline \n");
@@ -205,7 +206,7 @@ public class PipelinedSimulator extends LEGv8_Simulator {
 	private boolean ConditionalBranchHazard() {
 		boolean hazardPresent = false;
 		if (pipeline[1] != null) {
-			if (pipeline[1].getInstruction().getMnemonic().type.equals(TokenType.MNEMONIC_RL)) {
+			if (pipeline[1].getInstruction().getMnemonic().type.equals(TokenType.XMNEMONIC_RL)) {
 				hazardPresent = (pipeline[1].getInstruction().getArgs()[0] == IDEX_Rd || 
 						pipeline[1].getInstruction().getArgs()[0] == EXMEM_Rd);
 			}
@@ -326,16 +327,16 @@ public class PipelinedSimulator extends LEGv8_Simulator {
 		TokenType insGroup = pipeline[1].getInstruction().getMnemonic().type;
 		int[] a = pipeline[1].getInstruction().getArgs();
 		switch (insGroup) {
-		case MNEMONIC_RRR :
+		case XMNEMONIC_RRR :
 			IFID_Rd = a[0];
 			IFID_Rn = a[1];
 			IFID_Rm = a[2];
 			break;
-		case MNEMONIC_RRI :
+		case XMNEMONIC_RRI :
 			IFID_Rd = a[0];
 			IFID_Rn = a[1];
 			break;
-		case MNEMONIC_RM :
+		case XMNEMONIC_RM :
 			if (pipeline[1].getInstruction().getControlSignals().equals(ControlUnitConfiguration.RM_LOAD)) {
 				IFID_Rd = a[0];
 				IFID_Rn = a[1];
@@ -344,15 +345,15 @@ public class PipelinedSimulator extends LEGv8_Simulator {
 				IFID_Rm = a[0];
 			}
 			break;
-		case MNEMONIC_RRM :
+		case XMNEMONIC_RRM :
 			IFID_Rd = a[1];
 			IFID_Rn = a[2];
 			IFID_Rm = a[0];
 			break;
-		case MNEMONIC_RISI :
+		case XMNEMONIC_RISI :
 			IFID_Rd = a[0];
 			break;
-		case MNEMONIC_RL :
+		case XMNEMONIC_RL :
 			IFID_Rm = a[0];
 			break;
 		default:
@@ -372,19 +373,19 @@ public class PipelinedSimulator extends LEGv8_Simulator {
 		TokenType insGroup = pipeline[2].getInstruction().getMnemonic().type;
 		int[] a = pipeline[2].getInstruction().getArgs();
 		switch (insGroup) {
-		case MNEMONIC_RRR :
+		case XMNEMONIC_RRR :
 			IDEX_Rd = a[0];
 			IDEX_Rn = a[1];
 			IDEX_Rm = a[2];
 			IDEX_ReadData1 = pipeline[2].getSnapshotBefore().getRegister(a[1]);
 			IDEX_ReadData2 = pipeline[2].getSnapshotBefore().getRegister(a[2]);
 			break;
-		case MNEMONIC_RRI :
+		case XMNEMONIC_RRI :
 			IDEX_Rd = a[0];
 			IDEX_Rn = a[1];
 			IDEX_ReadData1 = pipeline[2].getSnapshotBefore().getRegister(a[1]);
 			break;
-		case MNEMONIC_RM :
+		case XMNEMONIC_RM :
 			if (IDEX_WB_RegWrite) {
 				IDEX_Rd = a[0];
 				IDEX_Rn = a[1];
@@ -396,17 +397,17 @@ public class PipelinedSimulator extends LEGv8_Simulator {
 				IDEX_ReadData2 = pipeline[2].getSnapshotBefore().getRegister(a[0]);
 			}
 			break;
-		case MNEMONIC_RRM :
+		case XMNEMONIC_RRM :
 			IDEX_Rd = a[1];
 			IDEX_Rn = a[2];
 			IDEX_Rm = a[0];
 			IDEX_ReadData1 = pipeline[2].getSnapshotBefore().getRegister(a[1]);
 			IDEX_ReadData2 = pipeline[2].getSnapshotBefore().getRegister(a[0]);
 			break;
-		case MNEMONIC_RISI :
+		case XMNEMONIC_RISI :
 			IDEX_Rd = a[0];
 			break;
-		case MNEMONIC_RL :
+		case XMNEMONIC_RL :
 			IDEX_Rm = a[0];
 			break;
 		default:
@@ -424,15 +425,15 @@ public class PipelinedSimulator extends LEGv8_Simulator {
 		int[] a = pipeline[3].getInstruction().getArgs();
 		TokenType insGroup = pipeline[3].getInstruction().getMnemonic().type;
 		switch (insGroup) {
-		case MNEMONIC_RRR :
+		case XMNEMONIC_RRR :
 			EXMEM_Rd = a[0];
 			EXMEM_ALUResult = pipeline[3].getSnapshotAfter().getRegister(a[0]);
 			break;
-		case MNEMONIC_RRI :
+		case XMNEMONIC_RRI :
 			EXMEM_Rd = a[0];
 			EXMEM_ALUResult = pipeline[3].getSnapshotAfter().getRegister(a[0]);
 			break;
-		case MNEMONIC_RM :
+		case XMNEMONIC_RM :
 			if (EXMEM_WB_RegWrite) {
 				EXMEM_Rd = a[0];
 			} else {
@@ -440,12 +441,12 @@ public class PipelinedSimulator extends LEGv8_Simulator {
 			}
 			EXMEM_ALUResult = pipeline[3].getSnapshotBefore().getRegister(a[1])+a[2];
 			break;
-		case MNEMONIC_RRM :
+		case XMNEMONIC_RRM :
 			EXMEM_ALUResult = pipeline[3].getSnapshotBefore().getRegister(a[2])+a[3];
 			EXMEM_WriteDataMem = pipeline[3].getSnapshotBefore().getRegister(a[0]);
 			EXMEM_Rd = a[1];
 			break;
-		case MNEMONIC_RISI :
+		case XMNEMONIC_RISI :
 			EXMEM_Rd = a[0];
 			EXMEM_ALUResult = pipeline[3].getSnapshotAfter().getRegister(a[0]);
 			break;
@@ -462,27 +463,27 @@ public class PipelinedSimulator extends LEGv8_Simulator {
 		int[] a = pipeline[4].getInstruction().getArgs();
 		TokenType insGroup = pipeline[4].getInstruction().getMnemonic().type;
 		switch (insGroup) {
-		case MNEMONIC_RRR :
+		case XMNEMONIC_RRR :
 			MEMWB_Rd = a[0];
 			MEMWB_ALUResult = pipeline[4].getSnapshotAfter().getRegister(a[0]);
 			break;
-		case MNEMONIC_RRI :
+		case XMNEMONIC_RRI :
 			MEMWB_Rd = a[0];
 			MEMWB_ALUResult = pipeline[4].getSnapshotAfter().getRegister(a[0]);
 			break;
-		case MNEMONIC_RM :
+		case XMNEMONIC_RM :
 			if (MEMWB_WB_RegWrite) {
 				MEMWB_Rd = a[0];
 				MEMWB_ReadDataMem = pipeline[4].getSnapshotAfter().getRegister(a[0]);
 			}
 			MEMWB_ALUResult = pipeline[4].getSnapshotBefore().getRegister(a[1])+a[2];
 			break;
-		case MNEMONIC_RRM :
+		case XMNEMONIC_RRM :
 			MEMWB_ALUResult = pipeline[4].getSnapshotBefore().getRegister(a[2])+a[3];
 			MEMWB_ReadDataMem = pipeline[4].getSnapshotAfter().getRegister(a[1]);
 			MEMWB_Rd = a[1];
 			break;
-		case MNEMONIC_RISI :
+		case XMNEMONIC_RISI :
 			MEMWB_Rd = a[0];
 			MEMWB_ALUResult = pipeline[4].getSnapshotAfter().getRegister(a[0]);
 			break;
@@ -492,7 +493,7 @@ public class PipelinedSimulator extends LEGv8_Simulator {
 	}
 	
 	@Override
-	public long getCPURegister(int index) {
+	public long getCPURegister(RegisterType type, int index) {
 		return visibleState.getRegister(index);
 	}
 	
