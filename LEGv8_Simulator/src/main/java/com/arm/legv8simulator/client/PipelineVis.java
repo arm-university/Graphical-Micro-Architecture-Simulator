@@ -152,18 +152,18 @@ public class PipelineVis {
 		clearCanvas();
 		Mnemonic m = ins.getMnemonic();
 		switch(m.type) {
-		case MNEMONIC_RRR :
+		case XMNEMONIC_RRR :
 			drawDatapathRRR(m.equals(Mnemonic.ADDS)||m.equals(Mnemonic.SUBS)||m.equals(Mnemonic.ANDS), m);
 			break;
-		case MNEMONIC_RRI :
+		case XMNEMONIC_RRI :
 			break;
-		case MNEMONIC_RISI :
+		case XMNEMONIC_RISI :
 			break;
-		case MNEMONIC_RM :
+		case XMNEMONIC_RM :
 			break;
-		case MNEMONIC_RRM :
+		case XMNEMONIC_RRM :
 			break;
-		case MNEMONIC_RL :
+		case XMNEMONIC_RL :
 			break;
 		case MNEMONIC_L :
 			break;
