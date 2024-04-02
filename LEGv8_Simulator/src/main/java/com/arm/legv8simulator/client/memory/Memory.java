@@ -22,14 +22,21 @@ import java.util.HashMap;
  */
 public class Memory {
 	
-	public static final long STACK_BASE = 0x7fffffff80L;					// quadword aligned stack base to avoid manual adjustment every time (could break something, only done for convenience), SIMONE.DEIANA@studenti.units.it
-	public static final long DYNAMIC_DATA_SEGMENT_OFFSET = 0x10000000L;
-	public static final long TEXT_SEGMENT_OFFSET = 0x400000L;
-	public static final int DOUBLEWORD_SIZE = 8;
-	public static final int WORD_SIZE = 4;
-	public static final int HALFWORD_SIZE = 2;
-	public static final int BYTE_SIZE = 1;
-	public static final int BITS_IN_BYTE = 8;
+	// the stack base has been made quadword aligned, whereas the Patterson specifies an 0x7ffffffffc address
+	public static final long	STACK_BASE = 0x7ffffffffcL + 0x4L;
+	public static final long	DYNAMIC_DATA_SEGMENT_OFFSET = 0x10000000L;
+	public static final long	TEXT_SEGMENT_OFFSET = 0x400000L;
+	public static final int		BYTE_SIZE = 1;
+	public static final int		HALFWORD_SIZE = BYTE_SIZE * 2;
+	public static final int		WORD_SIZE = HALFWORD_SIZE * 2;
+	public static final int		DOUBLEWORD_SIZE = WORD_SIZE * 2;
+	public static final int		BITS_IN_BYTE = 8;
+	
+	private ByteBuffer buffer;
+	private final long staticDataSegmentOffset;
+	// Java data structures cannot contain more than Integer.MAX_VALUE amount of elements, this means that in theory one cannot use this program to truly
+	// simulate the entire address space indicated by the Patterson as it would require more than 2^32 addresses, i.e. entries into the HashMap or ArrayList
+	private HashMap<Long, Byte> memory;					
 	
 	/**
 	 * Memory constructor with a specified number of instructions.
@@ -51,12 +58,12 @@ public class Memory {
 		for (int i=0; i<DOUBLEWORD_SIZE; i++) {
 			Byte b = memory.get(address+i);
 			if (b == null) {
-				buffer.put(i, (byte) 0);
+				buffer.putByte(i, (byte) 0);
 			} else {
-				buffer.put(i, b);
+				buffer.putByte(i, b);
 			}
 		}
-		return buffer.getLong(0);
+		return buffer.getDoubleWord(0);
 	}
 	
 	/**
@@ -66,9 +73,9 @@ public class Memory {
 	 */
 	public void storeDoubleword(long address, long value) throws SegmentFaultException {
 		boundsCheck(address, DOUBLEWORD_SIZE);
-		buffer.putLong(0, value);
+		buffer.putDoubleWord(0, value);
 		for (int i=0; i<DOUBLEWORD_SIZE; i++) {
-			memory.put(address+i, buffer.get(i));
+			memory.put(address+i, buffer.getByte(i));
 		}
 	}
 	
@@ -77,21 +84,21 @@ public class Memory {
 	 * @return			the signed word stored at <code>address</code>
 	 * @throws SegmentFaultException
 	 */
-	public long loadSignedWord(long address) throws SegmentFaultException {
+	public int loadSignedWord(long address) throws SegmentFaultException {
 		boundsCheck(address, WORD_SIZE);
 		for (int i=0; i<WORD_SIZE; i++) {
 			Byte b = memory.get(address+i);
 			if (b == null) {
-				buffer.put(i+WORD_SIZE, (byte) 0);
+				buffer.putByte(i+WORD_SIZE, (byte) 0);
 			} else {
-				buffer.put(i+WORD_SIZE, b);
+				buffer.putByte(i+WORD_SIZE, b);
 			}
 		}
 		// sign extend;
-		if (buffer.getInt(4) < 0) {
-			return buffer.getLong(0) | 0xffffffff00000000L;
+		if (buffer.getWord(4) < 0) {
+			return (int) (buffer.getDoubleWord(0) | 0xffffffff00000000L);
 		} else {
-			return buffer.getLong(0) & 0x00000000ffffffffL;
+			return (int) (buffer.getDoubleWord(0) & 0x00000000ffffffffL);
 		}
 	}
 	
@@ -102,9 +109,9 @@ public class Memory {
 	 */
 	public void storeWord(long address, long value) throws SegmentFaultException {
 		boundsCheck(address, WORD_SIZE);
-		buffer.putLong(0, value);
+		buffer.putDoubleWord(0, value);
 		for (int i=0; i<WORD_SIZE; i++) {
-			memory.put(address+i, buffer.get(i+WORD_SIZE));
+			memory.put(address+i, buffer.getByte(i+WORD_SIZE));
 		}
 	}
 	
@@ -116,17 +123,17 @@ public class Memory {
 	public long loadHalfword(long address) throws SegmentFaultException {
 		boundsCheck(address, HALFWORD_SIZE);
 		for (int i=0; i<DOUBLEWORD_SIZE-HALFWORD_SIZE; i++) {
-			buffer.put(i, (byte) 0);
+			buffer.putByte(i, (byte) 0);
 		}
 		for (int i=0; i<HALFWORD_SIZE; i++) {
 			Byte b = memory.get(address+i);
 			if (b == null) {
-				buffer.put(i+DOUBLEWORD_SIZE-HALFWORD_SIZE, (byte) 0);
+				buffer.putByte(i+DOUBLEWORD_SIZE-HALFWORD_SIZE, (byte) 0);
 			} else {
-				buffer.put(i+DOUBLEWORD_SIZE-HALFWORD_SIZE, b);
+				buffer.putByte(i+DOUBLEWORD_SIZE-HALFWORD_SIZE, b);
 			}
 		}
-		return buffer.getLong(0);
+		return buffer.getDoubleWord(0);
 	}
 	
 	/**
@@ -136,9 +143,9 @@ public class Memory {
 	 */
 	public void storeHalfword(long address, long value) throws SegmentFaultException {
 		boundsCheck(address, HALFWORD_SIZE);
-		buffer.putLong(0, value);
-		memory.put(address, buffer.get(DOUBLEWORD_SIZE-HALFWORD_SIZE));
-		memory.put(address+1, buffer.get(DOUBLEWORD_SIZE-BYTE_SIZE));
+		buffer.putDoubleWord(0, value);
+		memory.put(address, buffer.getByte(DOUBLEWORD_SIZE-HALFWORD_SIZE));
+		memory.put(address+1, buffer.getByte(DOUBLEWORD_SIZE-BYTE_SIZE));
 	}
 	
 	/**
@@ -149,15 +156,15 @@ public class Memory {
 	public long loadByte(long address) throws SegmentFaultException {
 		boundsCheck(address, BYTE_SIZE);
 		for (int i=0; i<DOUBLEWORD_SIZE-BYTE_SIZE; i++) {
-			buffer.put(i, (byte) 0);
+			buffer.putByte(i, (byte) 0);
 		}
 		Byte b = memory.get(address);
 		if (b == null) {
-			buffer.put(DOUBLEWORD_SIZE-BYTE_SIZE, (byte) 0);
+			buffer.putByte(DOUBLEWORD_SIZE-BYTE_SIZE, (byte) 0);
 		} else {
-			buffer.put(DOUBLEWORD_SIZE-BYTE_SIZE, b);
+			buffer.putByte(DOUBLEWORD_SIZE-BYTE_SIZE, b);
 		}
-		return buffer.getLong(0);
+		return buffer.getDoubleWord(0);
 	}
 	
 	/**
@@ -167,8 +174,8 @@ public class Memory {
 	 */
 	public void storeByte(long address, long value) throws SegmentFaultException {
 		boundsCheck(address, BYTE_SIZE);
-		buffer.putLong(0, value);
-		memory.put(address, buffer.get(DOUBLEWORD_SIZE-BYTE_SIZE));
+		buffer.putDoubleWord(0, value);
+		memory.put(address, buffer.getByte(DOUBLEWORD_SIZE-BYTE_SIZE));
 	}
 	
 	/* Checks to make sure the memory access is within the stack or heap segments
@@ -191,7 +198,4 @@ public class Memory {
 		return staticDataSegmentOffset;
 	}
 	
-	ByteBuffer buffer;
-	private long staticDataSegmentOffset;
-	private HashMap<Long, Byte> memory;
 }
