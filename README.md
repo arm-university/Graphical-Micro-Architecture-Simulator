@@ -3,10 +3,27 @@
 
 ## What has been added to this forked version
 
-* Fixed the behaviour of the BL instruction, branch and links work correctly now
-* Fixed the behaviour of the SUBS instructions, compares and conditional branches seem to work correctly now
-* Added the MUL instruction following the Patterson specification
-* Integrated the project with Maven in order to make importing, configuration and development effortless
+* **Integrated all the instructions of the LEGv8 ISA**, including the floating point operations.
+* Fixed all the major bugs that impeded the correct execution of code. Corrected stack base to be quadword aligned.
+* Integrated the project with Maven in order to make importing, configuration and development effortless.
+* Added a visualization for the stack and for the floating point registers. Reorganized the UI to best fit the new additions.
+* The project and the AceGWT library have been updated to use GWT 2.11.0
+
+## How to develop and package the project
+You can import this Maven project with your favorite Java IDE that supports git cloning and Maven projects (or you can do everything manually with the individual command line utilities). To just compile the sources you run the gwt:compile Maven action inside the LEGv8_Simulator folder.
+To package the application with the web resources (images, .css files, .html files, etc.) you need to run the "package" action inside the aforementioned folder. This will do both the compilation and the correct moving of the web resources, so it's the recommended action to execute in general.
+If you use an IDE these steps might be made easier by the means of UI elements. Use the command line only if you already know how Maven works.
+GWT only implements a subset of the Java 8 JRE, this means you need to limit your syntax to this version.
+### IntelliJ IDEA
+IntelliJ Ultimate offers a GWT plugin that warns the programmer when using methods, syntax and classes not implemented by GWT and can generate compile reports.
+Be warned that in some cases it might show bogous errors (for example it doesn't recognize the .css resource so it gives errors when mentioning its directives in the code) but this shouldn't affect the compilation which is done with GWT.
+This is the suggested working environment because its modern features and integrations.
+### Eclipse
+Eclipse offers a GWT plugin (which has installation problems with Eclipse version newer than the 2023-09) that makes compilation easy but unlike the maven "package" action deploys the compiled sources into a "war" folder and doesn't automatically copy-paste the web resources needed to launch the web page. That has to be done manually.
+It is suggested to use the Maven actions with Eclipse, especially because this allows you to install the latest version of the IDE.
+### Command Line
+You can download, develop, build and package this project using git and maven from the command line together with your favorite IDE or text editor.
+To do this you simply git clone the repository, set it up using maven, make your changes and generate a working package as written above.
 
 This effort has been made in the context of the **_Digital Systems Architectures_** course held at the **_Department of Engineering and Architecture_** at the **_[University of Trieste](https://www.units.it/en)_** under the guidance of _**Prof. Alberto Carini**_ . 
 
@@ -34,7 +51,7 @@ To produce learners who can program using Arm instructions and describe the corr
 
 A fundamental understanding of an Instruction Set Architecture (ISA) is a crucial skill for all aspiring hardware designers and developers. The ISA acts as the interface between hardware and software, specifying what the instruction set can do and how the processor makes use of those instructions - helping developers write more efficient code.
 
-Sometimes, however, students stuggle to understand how the ISA executes complex commands, for instance for the CPU, databus, memory and I/O. This simulator simplifies this interaction by allowing students to visualize the instruction execution, establishing a clear link between the inner architecture of a microprocessor and the instructions required to efficiently execute commands on the hardware.
+Sometimes, however, students struggle to understand how the ISA executes complex commands, for instance for the CPU, databus, memory and I/O. This simulator simplifies this interaction by allowing students to visualize the instruction execution, establishing a clear link between the inner architecture of a microprocessor and the instructions required to efficiently execute commands on the hardware.
 
 **This tool is currently a BETA version. If there are any issues, please read the Reporting Bugs section in [here.](https://github.com/arm-university/Graphical-Micro-Architecture-Simulator/blob/main/Contributions_and_Modifications/Contributions_And_Modifications.md)**
 
@@ -42,7 +59,7 @@ Sometimes, however, students stuggle to understand how the ISA executes complex 
 Either clone this repository or [download the simulator here.](https://github.com/arm-university/Graphical-Micro-Architecture-Simulator/archive/refs/heads/main.zip)
 
 
-1.	Navigate to `/LEGv8_Simulator/war` directory and open `LEGv8_Simulator` using a web browser. 
+1.	Navigate to `LEGv8_Simulator/target` directory and open `LEGv8_Simulator-1.0-SNAPSHOT/LEGv8_Simulator.html` using a web browser. 
 2.	Click the **Help** tab on the top right of the simulator, which contains further documentation on usage. 
 
 ## Modifications and Contributions
