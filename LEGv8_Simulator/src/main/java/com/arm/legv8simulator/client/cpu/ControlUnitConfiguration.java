@@ -13,6 +13,7 @@ public enum ControlUnitConfiguration {
 	
 	RRR(false, false, false, false, false, false, false, false, false, 2, true),
 	RRR_FLAGS(false, false, false, false, false, false, false, true, false, 2, true),
+	RR_FLAGS(false, false, false, false, false, false, false, true, false, 2, true),
 	RRI(false, false, false, false, false, false, false, false, true, 2, true),
 	RRI_FLAGS(false, false, false, false, false, false, false, true, true, 2, true),
 	RM_LOAD(null, false, false, false, false, true, true, false, true, 0, true),
