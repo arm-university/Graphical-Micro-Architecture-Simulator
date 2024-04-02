@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.arm.legv8simulator.client.Error;
 import com.arm.legv8simulator.client.cpu.CPU;
+import com.arm.legv8simulator.client.cpu.RegisterType;
 import com.arm.legv8simulator.client.instruction.Decoder;
 import com.arm.legv8simulator.client.instruction.ImmediateOutOfBoundsException;
 import com.arm.legv8simulator.client.instruction.Instruction;
@@ -135,8 +136,8 @@ public abstract class LEGv8_Simulator {
 	 * @param index	the index of any CPU register. Permitted range 0-31
 	 * @return		the value stored in the specified CPU register
 	 */
-	public long getCPURegister(int index) {
-		return cpu.getRegister(index);
+	public long getCPURegister(RegisterType type, int index) {
+		return cpu.getRegister(type, index);
 	} 
 	
 	/**
@@ -195,6 +196,10 @@ public abstract class LEGv8_Simulator {
 	 */
 	public int getCurrentLineNumber() {
 		return currentLineNumber;
+	}
+	
+	public Memory getMemoryState() {
+		return memory;
 	}
 	
 	protected ArrayList<TextLine> code;
