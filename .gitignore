@@ -3,6 +3,12 @@
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### IGNORE BUILD DIRECTORY ON INTELLIJ ###
+LEGv8_Simulator/target/
+
+### IGNORE BUILD DIRECTORY ON ECLIPSE ###
+LEGv8_Simulator/war/
+
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml
@@ -36,5 +42,3 @@ build/
 
 ### Mac OS ###
 .DS_Store
-
-LEGv8_Simulator/target
