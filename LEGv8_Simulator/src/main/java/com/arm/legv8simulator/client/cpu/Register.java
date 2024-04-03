@@ -2,7 +2,7 @@ package com.arm.legv8simulator.client.cpu;
 
 import com.arm.legv8simulator.client.memory.Memory;
 
-public class Register {
+public final class Register {
 	
 	private final RegisterType type; // maybe useless
 	private final int size;
@@ -38,6 +38,14 @@ public class Register {
 	
 	public int readWord() {
 		return (int) this.content;
+	}
+
+	public RegisterType getType() {
+		return type;
+	}
+
+	public int getSize() {
+		return size;
 	}
 
 
