@@ -11,7 +11,6 @@ import com.arm.legv8simulator.client.lexer.TextLine;
 import com.arm.legv8simulator.client.memory.Memory;
 import com.arm.legv8simulator.client.memory.SegmentFaultException;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -27,7 +26,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -230,7 +228,7 @@ public class WebApp implements EntryPoint {
 	}
 	
 	// builds theGUI for the pipelined execution mode
-	/*private void buildPipelineUI() {
+	private void buildPipelineUI() {
 		scDatapath = null;
 		buildVisualisationUI();
 		double width = Window.getClientWidth();
@@ -241,12 +239,12 @@ public class WebApp implements EntryPoint {
 		}
 		double datapathWidth = width-editorPanel.getOffsetWidth()-HORIZONTAL_PADDING;
 		pDatapath = new PipelineVis(datapathWidth, datapathWidth/ASPECT_RATIO);
-		contentPanel.add(datapathPanel);
 		datapathPanel.add(debugPanel);
 		datapathPanel.add(pDatapath.getCanvas());
+		contentPanel.add(datapathPanel);
 		//debugPanel.add(datapathPanel);
 		//page.add(datapathPanel);
-	}*/
+	}
 	
 	// builds the GUI for the help page
 		private void buildHelpPage() {
@@ -574,11 +572,11 @@ public class WebApp implements EntryPoint {
 					launchSingleCycleSim();
 					pipelineSim = null;
 					break;
-				/*case PIPELINE_VISUAL :
+				case PIPELINE_VISUAL :
 					buildPipelineUI();
 					launchPipelineSim();
 					singleCycleSim = null;
-					break;*/
+					break;
 				}
 			}
 		});
@@ -591,7 +589,7 @@ public class WebApp implements EntryPoint {
 		executionModes = new ListBox();
 		//executionModes.addItem(SIMULATION);
 		executionModes.addItem(SINGLE_CYCLE_VISUAL);
-		//executionModes.addItem(PIPELINE_VISUAL);
+		executionModes.addItem(PIPELINE_VISUAL);
 		executionModes.setVisibleItemCount(1);
 		executionModes.addStyleName("dropdownBox");
 		currentExMode = SINGLE_CYCLE_VISUAL;
@@ -607,10 +605,10 @@ public class WebApp implements EntryPoint {
 					buildSingleCycleUI();
 					pipelineSim = null;
 					break;
-				/*case PIPELINE_VISUAL :
+				case PIPELINE_VISUAL :
 					buildPipelineUI();
 					singleCycleSim = null;
-					break;*/
+					break;
 				}
 			}
 		});
@@ -630,8 +628,8 @@ public class WebApp implements EntryPoint {
 //					break;
 					case SINGLE_CYCLE_VISUAL : executeInstruction(true);
 					break;
-					/*case PIPELINE_VISUAL : clockPipeline();
-					break;*/
+					case PIPELINE_VISUAL : clockPipeline();
+					break;
 					}
 				} else {
 					executeButt.setEnabled(false);
@@ -850,7 +848,7 @@ public class WebApp implements EntryPoint {
 	}
 	
 	// starts a new PipleineSimulator object
-	/*private void launchPipelineSim() {
+	private void launchPipelineSim() {
 		editor.clearAnnotations();
 		splitIntoLines(editor.getText());
 		pipelineSim = new PipelinedSimulator(code);
@@ -870,7 +868,7 @@ public class WebApp implements EntryPoint {
 		} else {
 			executeButt.setEnabled(true);
 		}
-	}*/
+	}
 	
 	// Executes an instruction when in simulation or single-cycle mode
 	private void executeInstruction(boolean visual) {
@@ -925,7 +923,7 @@ public class WebApp implements EntryPoint {
 	}
 	
 	// clocks the cpu in the pipeline execution mode
-	/*private void clockPipeline() {
+	private void clockPipeline() {
 		pipelineSim.clock();
 		editor.removeAllMarkers();
 		if (pipelineSim.getCurrentLineNumber() != -1) {
@@ -941,7 +939,7 @@ public class WebApp implements EntryPoint {
 			setError(runtimeError.getMsg(), runtimeError.getLineNumber());
 			editor.setAnnotations();
 		}
-	}*/
+	}
 	
 	// adds the error messages the left side of the source code editor - seen as red box with white cross
 	private void setCompileErrors() {
