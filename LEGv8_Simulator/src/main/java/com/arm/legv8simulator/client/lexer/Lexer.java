@@ -2,6 +2,7 @@ package com.arm.legv8simulator.client.lexer;
 
 import java.util.ArrayList;
 
+import com.arm.legv8simulator.client.parser.Parser;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
@@ -10,7 +11,7 @@ import com.google.gwt.regexp.shared.RegExp;
  * text editor. A list of lexical tokens is returned which can be parsed by the 
  * <code>Parser</code> class.
  * 
- * @see	Parser
+ * @see    Parser
  * @author Jonathan Wright, 2016
  *
  */

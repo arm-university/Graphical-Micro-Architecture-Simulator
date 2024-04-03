@@ -1,5 +1,6 @@
 package com.arm.legv8simulator.client.instruction;
 
+import com.arm.legv8simulator.client.cpu.CPU;
 import com.arm.legv8simulator.client.cpu.ControlUnitConfiguration;
 
 /**
