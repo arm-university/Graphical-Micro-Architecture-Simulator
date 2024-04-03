@@ -46,6 +46,7 @@ public enum Mnemonic {
 	MOVK("MOVK", "movk", TokenType.XMNEMONIC_RISI, "111100101", "0001"),
 	CBZ("CBZ", "cbz", TokenType.XMNEMONIC_RL, "10110100", "0111"),
 	CBNZ("CBNZ", "cbnz", TokenType.XMNEMONIC_RL, "10110101", "0111"),
+	LDA("LDA", "lda", TokenType.XMNEMONIC_RL, null, null),
 	BEQ("B.EQ", "b.eq", TokenType.MNEMONIC_L, "01010100", null),
 	BNE("B.NE", "b.ne", TokenType.MNEMONIC_L, "01010100", null),
 	BHS("B.HS", "b.hs", TokenType.MNEMONIC_L, "01010100", null),

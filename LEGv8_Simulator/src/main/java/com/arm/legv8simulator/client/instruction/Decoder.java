@@ -5,8 +5,6 @@ import java.util.HashMap;
 
 import com.arm.legv8simulator.client.cpu.CPU;
 import com.arm.legv8simulator.client.cpu.ControlUnitConfiguration;
-import com.arm.legv8simulator.client.cpu.Register;
-import com.arm.legv8simulator.client.cpu.RegisterType;
 import com.google.gwt.core.client.JavaScriptException;
 
 /**
@@ -122,6 +120,8 @@ public class Decoder {
 		case CBZ :
 			return new Instruction(mnemonic, decodeRLArgs(args, branchTable), lineNumber, ControlUnitConfiguration.RL);
 		case CBNZ :
+			return new Instruction(mnemonic, decodeRLArgs(args, branchTable), lineNumber, ControlUnitConfiguration.RL);
+		case LDA :
 			return new Instruction(mnemonic, decodeRLArgs(args, branchTable), lineNumber, ControlUnitConfiguration.RL);
 		case BEQ :
 			return new Instruction(mnemonic, decodeLArgs(args, branchTable), lineNumber, ControlUnitConfiguration.L_COND);

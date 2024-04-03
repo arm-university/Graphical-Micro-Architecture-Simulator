@@ -1,5 +1,7 @@
 package com.arm.legv8simulator.client.lexer;
 
+import com.arm.legv8simulator.client.parser.Parser;
+
 /**
  * The <code>TokenType</code> enumeration uses regular expressions to define
  * all valid lexical tokens in the LEGv8 assembly language.
@@ -36,7 +38,7 @@ public enum TokenType {
 	DMNEMONIC_RM("LDURD[ \t]+|STURD[ \t]+|ldurd[ \t]+|sturd[ \t]+", 20, "DMNEMONIC"),
 	XMNEMONIC_RRM("STXR[ \t]+|stxr[ \t]+", 21, "XMNEMONIC"),
 	MNEMONIC_L("B\\.[GNL]E[ \t]+|B\\.[HL]S[ \t]+|B\\.[LG]T[ \t]+|B\\.LO[ \t]+|B\\.[MH]I[ \t]+|B\\.EQ[ \t]+|B\\.V[SC][ \t]+|B\\.PL[ \t]+|B[RL]?[ \t]+|b\\.[gnl]e[ \t]+|b\\.[hl]s[ \t]+|b\\.[lg]t[ \t]+|b\\.lo[ \t]+|b\\.[mh]i[ \t]+|b\\.eq[ \t]+|b\\.v[sc][ \t]+|b\\.pl[ \t]+|b[rl]?[ \t]+", 22, "MNEMONIC"),
-	XMNEMONIC_RL("CBN?Z[ \t]+|cbn?z[ \t]+", 23, "XMNEMONIC"),
+	XMNEMONIC_RL("CBN?Z[ \t]+|cbn?z[ \t]+|LDA[ \t]+|lda[ \t]+", 23, "XMNEMONIC"),
 	LABEL("[A-Za-z0-9_]+:", 24, "LABEL"),
 	IDENTIFIER("[A-Za-z0-9_]+", 25, "IDENTIFIER"),
 	WHITESPACE("[ \t]+", 26, "WHITESPACE"),
@@ -75,7 +77,7 @@ public enum TokenType {
 	
 	/**
 	 * @return	tokenStr
-	 * @see 	tokenStr
+	 *
 	 */
 	@Override
 	public String toString() {
