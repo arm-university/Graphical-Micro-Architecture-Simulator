@@ -45,8 +45,11 @@ public class ImmediateOutOfBoundsException extends Exception {
 		illegalImm = imm;
 		this.cases = new int[] {allowedVal};	
 	}
-	
-	@Override
+
+    public ImmediateOutOfBoundsException() {
+    }
+
+    @Override
 	public String getMessage() {
 		if (cases == null) {
 			return "Illegal immediate value: " + illegalImm + ". Permitted range: " + lowerBound + " - " + upperBound + " inclusive.";

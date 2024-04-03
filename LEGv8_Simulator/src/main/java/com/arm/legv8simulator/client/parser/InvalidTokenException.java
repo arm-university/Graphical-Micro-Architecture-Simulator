@@ -30,8 +30,11 @@ public class InvalidTokenException extends Exception {
 		this.tokenExpected = tokenExpected;
 		this.mnemonicExpected = mnemonicExpected;
 	}
-	
-	/**
+
+    public InvalidTokenException() {
+    }
+
+    /**
 	 * @return	the lexical token expected - but not found - by the parser
 	 */
 	public TokenType getExpectedTokenType() {

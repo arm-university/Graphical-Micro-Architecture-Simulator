@@ -19,8 +19,11 @@ public class SPAlignmentException extends Exception {
 		super();
 		this.address = address;
 	}
-	
-	@Override
+
+    public SPAlignmentException() {
+    }
+
+    @Override
 	public String getMessage() {
 		return "Data transfer operation with misaligned SP: 0x" + Long.toHexString(address) + " is not quadword aligned.";
 	}

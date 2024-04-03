@@ -19,8 +19,11 @@ public class PCAlignmentException extends Exception {
 		super();
 		this.address = address;
 	}
-	
-	@Override
+
+    public PCAlignmentException() {
+    }
+
+    @Override
 	public String getMessage() {
 		return "The address 0x" + Long.toHexString(address) + " is not word aligned.";
 	}

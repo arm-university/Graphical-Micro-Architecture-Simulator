@@ -20,8 +20,11 @@ public class UnsupportedInstructionException extends Exception {
 		super();
 		this.state = state;
 	}
-	
-	/**
+
+    public UnsupportedInstructionException() {
+    }
+
+    /**
 	 * @return	the parser state when this 
 	 * <code>UnsupportedInstructionException</code> was thrown
 	 */

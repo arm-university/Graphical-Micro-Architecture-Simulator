@@ -17,7 +17,10 @@ public class UndefinedLabelException extends Exception {
 		this.label = label;
 	}
 
-	@Override
+    public UndefinedLabelException() {
+    }
+
+    @Override
 	public String getMessage() {
 		return "Undefined label: '" + label + "'";
 	}

@@ -19,8 +19,11 @@ public class SegmentFaultException extends Exception {
 		this.address = address;
 		this.segment = segment;
 	}
-	
-	@Override
+
+    public SegmentFaultException() {
+    }
+
+    @Override
 	public String getMessage() {
 		return "Memory address out of bounds: 0x" + Long.toHexString(address) + " is not in the " + segment + " segment";
 	}
