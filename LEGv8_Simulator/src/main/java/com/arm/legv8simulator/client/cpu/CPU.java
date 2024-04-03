@@ -54,15 +54,15 @@ public class CPU {
 	public static final int X11 = 11, D11 = 11, S11= 11;
 	public static final int X10 = 10, D10 = 10, S10 = 10;
 	public static final int X9 = 9, D9 = 9, S9 = 9;
-	public static final int X8 = 8, D8 = 9, S8 = 9;
-	public static final int X7 = 7, D7 = 9, S7 = 9;
-	public static final int X6 = 6, D6 = 9, S6 = 9;
-	public static final int X5 = 5, D5 = 9, S5 = 9;
-	public static final int X4 = 4, D4 = 9, S4 = 9;
-	public static final int X3 = 3, D3 = 9, S3 = 9;
-	public static final int X2 = 2, D2 = 9, S2 = 9;
-	public static final int X1 = 1, D1 = 9, S1 = 9;
-	public static final int X0 = 0, D0 = 9, S0 = 9;
+	public static final int X8 = 8, D8 = 8, S8 = 8;
+	public static final int X7 = 7, D7 = 7, S7 = 7;
+	public static final int X6 = 6, D6 = 6, S6 = 6;
+	public static final int X5 = 5, D5 = 5, S5 = 5;
+	public static final int X4 = 4, D4 = 4, S4 = 4;
+	public static final int X3 = 3, D3 = 3, S3 = 3;
+	public static final int X2 = 2, D2 = 2, S2 = 2;
+	public static final int X1 = 1, D1 = 1, S1 = 1;
+	public static final int X0 = 0, D0 = 0, S0 = 0;
 	
 	private boolean branchTaken = false;
 	private boolean STXRSucceed = false;
@@ -417,6 +417,9 @@ public class CPU {
 			break;
 		case CBNZ :
 			CBNZ(args[0], args[1]);
+			break;
+		case LDA:
+			LDA(args[0], args[1]);
 			break;
 		case BEQ :
 			BEQ(args[0]);
@@ -887,6 +890,15 @@ public class CPU {
 		}
 		cpuLog.append("CBNZ \t X" + conditionReg + ", " + "0x" + Long.toHexString(getPC()) + " \n");
 		branchTaken = (XRegisterFile[conditionReg].readDoubleWord() != 0);
+	}
+	
+	private void LDA(int destReg, long addressToLoad) {
+		if (destReg == XZR) {
+			cpuLog.append("Ignored attempted assignment to XZR. \n");
+		} else {
+			XRegisterFile[destReg].writeDoubleWord(addressToLoad);
+		}
+		cpuLog.append("LDA \t X" + destReg + ", " + "0x" + Long.toHexString(addressToLoad) + " \n");
 	}
 
 	private void BEQ(int branchIndex) {
