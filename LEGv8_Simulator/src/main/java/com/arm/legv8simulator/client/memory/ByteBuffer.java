@@ -1,5 +1,6 @@
 package com.arm.legv8simulator.client.memory;
 
+
 /**
  * <code>ByteBuffer</code> is a byte buffer of client specified length, used to store data in 
  * big-endian format. Data - <code>bytes</code>, <code>ints</code> and <code>longs</code> - 
@@ -7,14 +8,15 @@ package com.arm.legv8simulator.client.memory;
  * performed so attempting to read or write from an index outside the buffer will result in 
  * a <code>NullPointerException</code>.   
  * <p>
- * This class has been written because java.nio.ByteBuffer is not supported by GWT.
+ * This class has been written because java.nio.ByteBuffer and java.io.DataInputStream is not supported by GWT.
  * 
  * @author Jonathan Wright, 2016
  */
 
-public class ByteBuffer {
+class ByteBuffer {
 	
 	private byte[] buffer;
+
 	
 	/**
 	 * @param capacity	the number of bytes in this ByteBuffer 
