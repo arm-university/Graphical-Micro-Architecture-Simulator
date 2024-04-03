@@ -1,11 +1,13 @@
 package com.arm.legv8simulator.client.lexer;
 
+import com.arm.legv8simulator.client.parser.Parser;
+
 /**
  * The <code>Token</code> class represents the lexical tokens returned by the <code>Lexer</code>
  * after processing a line of LEGv8 source code. These tokens can be parsed by the <code>Parser</code>.
  * 
  * @see Lexer
- * @see	Parser
+ * @see    Parser
  * 
  * @author Jonathan Wright, 2016
  */
