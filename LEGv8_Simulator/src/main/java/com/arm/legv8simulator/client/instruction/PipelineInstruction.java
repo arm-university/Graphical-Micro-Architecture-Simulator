@@ -9,12 +9,18 @@ import com.arm.legv8simulator.client.cpu.CPUSnapshot;
  * write-back stage rather than when the underlying single cycle <code>CPU</code> executes the instruction. 
  * 
  * @see Instruction
- * @see CPUSnpashot
+ * @see CPUSnapshot
  * @see CPU
  * 
  * @author Jonathan Wright, 2016
  */
 public class PipelineInstruction {
+	
+	private Instruction instruction;
+	private CPUSnapshot before;
+	private CPUSnapshot after;
+	private long PC;
+	private boolean branchTaken;
 
 	/**
 	 * @param instruction	the <code>Instruction</code> to be executed
@@ -68,10 +74,5 @@ public class PipelineInstruction {
 	public boolean getBranchTaken() {
 		return branchTaken;
 	}
-	
-	private Instruction instruction;
-	private CPUSnapshot before;
-	private CPUSnapshot after;
-	private long PC;
-	private boolean branchTaken; 
+	 
 }
