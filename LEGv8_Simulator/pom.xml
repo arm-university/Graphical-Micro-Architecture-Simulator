@@ -85,7 +85,7 @@
                                 <goal>copy-resources</goal>
                             </goals>
                             <configuration>
-                                <outputDirectory>${project.build.directory}/LEGv8_Simulator-${version}</outputDirectory>
+                                <outputDirectory>${project.build.directory}/LEGv8_Simulator-${project.version}</outputDirectory>
                                 <resources>
                                     <resource>
                                         <directory>src/main/web-resources</directory>
