@@ -38,14 +38,6 @@ resources needed to launch the web page. That has to be done manually. This plug
 Clone the repository to a folder of your choosing, make your changes to the files and run the `mvn package` command inside the `LEGv8_Simulator` folder.
  The folder containing the simulator will appear under `LEGv8_Simulator/target/`.
 
-You can import this Maven project with your favorite Java IDE that supports git and Maven projects (or you can do everything manually
-with the individual command line utilities). To simply compile the sources you need to run the _gwt:compile_ Maven action inside the LEGv8_Simulator folder.
-To package the application with the web resources (images, .css files, .html files, etc.) you need to run the **`package`** action inside the aforementioned folder.
- This will do both the compilation and the correct moving of the web resources, so it's the recommended action to execute in general 
-(depending on the IDE used the `package` action might not be shown and needs to be added as a custom maven action).
-If you use an IDE these steps might be made easier by the means of UI elements. Use the command line only if you already know how Maven works
-or if you are using a text editor which does not support Maven.
-
 **GWT only implements a subset of the Java 8 JRE, this means you need to limit your syntax to this version and not every
 feature might be usable.**
 
