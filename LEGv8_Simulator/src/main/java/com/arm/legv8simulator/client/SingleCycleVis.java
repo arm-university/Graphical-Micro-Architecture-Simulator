@@ -2020,9 +2020,9 @@ public class SingleCycleVis {
 		ctx.fillText(ControlUnitConfiguration.toString(c.uncondBranch), BRANCH_OR_COORDS[0]-7.5, BRANCH_OR_COORDS[1]+3);
 		ctx.fillText(ControlUnitConfiguration.toString(c.flagBranch), FLAG_AND_COORDS[0]-t.getWidth()-2, FLAG_AND_COORDS[1]+2.5);
 		ctx.fillText(ControlUnitConfiguration.toString(c.zeroBranch), ZERO_AND_COORDS[0]-t.getWidth()-2, ZERO_AND_COORDS[1]+2.5);
-		ctx.fillText(ControlUnitConfiguration.toString(c.memRead), DATA_MEM_COORDS[0]+DATA_MEM_DIMENSIONS[0]/2-t.getWidth()-1, DATA_MEM_COORDS[1]-3);
+		ctx.fillText(ControlUnitConfiguration.toString(c.memWrite), DATA_MEM_COORDS[0]+DATA_MEM_DIMENSIONS[0]/2-t.getWidth()-1, DATA_MEM_COORDS[1]-3);
 		ctx.fillText(ControlUnitConfiguration.toString(c.memToReg), MUX_READ_DATA_MEM_COORDS[0]+MUX_READ_DATA_MEM_DIMENSIONS[0]/2-t.getWidth()-1, MUX_READ_DATA_MEM_COORDS[1]-3);
-		ctx.fillText(ControlUnitConfiguration.toString(c.memWrite), DATA_MEM_COORDS[0]+DATA_MEM_DIMENSIONS[0]/2-t.getWidth()-1, DATA_MEM_COORDS[1]+DATA_MEM_DIMENSIONS[1]+10);
+		ctx.fillText(ControlUnitConfiguration.toString(c.memRead), DATA_MEM_COORDS[0]+DATA_MEM_DIMENSIONS[0]/2-t.getWidth()-1, DATA_MEM_COORDS[1]+DATA_MEM_DIMENSIONS[1]+10);
 		ctx.fillText(ControlUnitConfiguration.toString(c.flagWrite), FLAGS_COORDS[0]+FLAGS_DIMENSIONS[0]/2-t.getWidth()-1, FLAGS_COORDS[1]-3);
 		ctx.fillText(ControlUnitConfiguration.toString(c.aluSrc), MUX_READ_REG_COORDS[0]+MUX_READ_REG_DIMENSIONS[0]/2-t.getWidth()-1, MUX_READ_REG_COORDS[1]-3);
 		ctx.fillText(ControlUnitConfiguration.toString(c.regWrite), REG_FILE_COORDS[0]+REG_FILE_DIMENSIONS[0]/2+2, REG_FILE_COORDS[1]-3);
