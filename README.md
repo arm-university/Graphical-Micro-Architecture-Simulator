@@ -15,6 +15,29 @@ This effort has been made as a Computer Engineering bachelor's thesis in the con
 
 
 ## How to develop and package the project
+
+### IntelliJ IDEA
+Choose the `Get from VCS` option and copy paste this repository's git link. The Maven project will be cloned into your workspace and the dependencies will be automatically downloaded and configured.
+After making your changes you can build and package the simulator by going to the Maven panel on the right, navigate to `Graphical-Micro-Architecture-Simulator -> LEGv8_Simulator -> Lifecycle -> package` .
+The folder containing the simulator will appear under `LEGv8_Simulator/target/` . 
+
+IntelliJ Ultimate offers a GWT plugin that warns the programmer when using methods, syntax and classes not implemented by GWT and can generate compile reports.
+Be warned that in some cases it might show bogous errors (such as missing css directives), 
+but this shouldn't affect the compilation which is done with GWT.
+If you use IntelliJ without this plugin the errors will disappear but you will not have access to said features.
+
+### Eclipse
+Choose `Import projects...`, select `Git/Projects from Git (with smart import)` and copy paste this repository's git link. Keep pressing `next` until it has finished the procedure. It is recommended to go to `Window -> Preferences -> XML (Wild Web Developer)` and enable the download of external resources. Unlike IntelliJ, Eclipse doesn't show directly the `package` action but has to be added manually by right clicking on the LEGv8_Simulator folder and going to `Run As -> Run Configurations...` and then double click on `Maven Build`. This will create a new configuration for you to edit: give it the name `package`, select `Workspace... -> LEGv8_Simulator` as the `Base Directory` and write `package` inside the `Goals` text box. Now you can `Apply` and run it. To run it again just go to the `Run As` menu as before and it should have been added there.
+The folder containing the simulator will appear under `LEGv8_Simulator/target/` (press F5 in Eclipse to refresh the folders).
+
+Eclipse offers a GWT plugin (which has installation problems with Eclipse versions newer than the 2023-09) that makes compilation easier 
+but unlike the Maven `package` action deploys the compiled sources into a "war" folder and doesn't automatically copy-paste the web 
+resources needed to launch the web page. That has to be done manually. This plugin uses the older build method and is not recommended.
+
+### Command Line
+Clone the repository to a folder of your choosing, make your changes to the files and run the `mvn package` command inside the `LEGv8_Simulator` folder.
+ The folder containing the simulator will appear under `LEGv8_Simulator/target/`.
+
 You can import this Maven project with your favorite Java IDE that supports git and Maven projects (or you can do everything manually
 with the individual command line utilities). To simply compile the sources you need to run the _gwt:compile_ Maven action inside the LEGv8_Simulator folder.
 To package the application with the web resources (images, .css files, .html files, etc.) you need to run the **`package`** action inside the aforementioned folder.
@@ -25,22 +48,6 @@ or if you are using a text editor which does not support Maven.
 
 **GWT only implements a subset of the Java 8 JRE, this means you need to limit your syntax to this version and not every
 feature might be usable.**
-
-### IntelliJ IDEA
-IntelliJ Ultimate offers a GWT plugin that warns the programmer when using methods, syntax and classes not implemented by GWT and can generate compile reports.
-Be warned that in some cases it might show bogous errors (such as missing css directives), 
-but this shouldn't affect the compilation which is done with GWT.
-If you use IntelliJ without this plugin the errors will disappear but you will not have access to said features.
-IntelliJ Community/Ultimate is the recommended IDE to use thanks to its modern features and integration.
-### Eclipse
-Eclipse offers a GWT plugin (which has installation problems with Eclipse version newer than the 2023-09) that makes compilation easier 
-but unlike the Maven `package` action deploys the compiled sources into a "war" folder and doesn't automatically copy-paste the web 
-resources needed to launch the web page. That has to be done manually.
-It is suggested to use the Maven actions with Eclipse (either externally through the
- command line or using the Maven integration in Eclipse), especially because this allows you to use the latest version of the IDE.
-### Command Line
-You can download, develop, build and package this project using git and maven from the command line together with your favorite IDE or text editor.
-To do this you simply git clone the repository, make your changes and generate a working package with `mvn package` executed inside the `LEGv8_Simulator` folder.
 
 **Note: This tool is currently a BETA version.**
 
