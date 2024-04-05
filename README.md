@@ -32,8 +32,13 @@ Choose `Import projects...`, select `Git/Projects from Git (with smart import)` 
 The folder containing the simulator will appear under `LEGv8_Simulator/target/` (press F5 in Eclipse to refresh the folders).
 
 Eclipse offers a GWT plugin (which has installation problems with Eclipse versions newer than the 2023-09) that makes compilation easier 
-but unlike the Maven `package` action deploys the compiled sources into a "war" folder and doesn't automatically copy-paste the web 
+but unlike the Maven `package` action deploys the compiled sources into a `war` folder and doesn't automatically copy-paste the web 
 resources needed to launch the web page. That has to be done manually. This plugin uses the older build method and is not recommended.
+
+### Apache NetBeans
+
+Clone the repository to a location of your choosing. In NetBeans go to `File -> Open Project...` and select the cloned repository folder. To access the LEGv8_Simulator files in the IDE go to `Graphical-Micro-Architecture-Simulator -> Modules` and double click on `LEGv8_Simulator`. This will open the module in the project browser. In order to build and package the simulator, right click on `LEGv8_Simulator -> Run Maven -> Goals...` and write `package` into the Goals text field and press OK.
+The folder containing the simulator will appear under `LEGv8_Simulator/target/` . 
 
 ### Command Line
 Clone the repository to a folder of your choosing, make your changes to the files and run the `mvn package` command inside the `LEGv8_Simulator` folder.
