@@ -55,15 +55,15 @@ public class Decoder {
 			return new Instruction(mnemonic, decodeRRIArithmeticArgs(args), lineNumber, ControlUnitConfiguration.RRI);
 		case ADDIS :
 			return new Instruction(mnemonic, decodeRRIArithmeticArgs(args), lineNumber, ControlUnitConfiguration.RRI_FLAGS);
-		case MUL :		// added MUL instruction, SIMONE.DEIANA@studenti.units.it
+		case MUL :
 			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
-		case UMULH :	// added UMULH instruction, SIMONE.DEIANA@studenti.units.it
+		case UMULH :
 			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
-		case SMULH :	// added SMULH instruction, SIMONE.DEIANA@studenti.units.it
+		case SMULH :
 			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
-		case UDIV :	// added UDIV instruction, SIMONE.DEIANA@studenti.units.it
+		case UDIV :
 			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
-		case SDIV :	// added SDIV instruction, SIMONE.DEIANA@studenti.units.it
+		case SDIV :
 			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
 		case SUB :
 			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
@@ -179,7 +179,7 @@ public class Decoder {
 			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
 		case FDIVD :
 			return new Instruction(mnemonic, decodeRRRArgs(args), lineNumber, ControlUnitConfiguration.RRR);
-		case FCMPS :	// VEDERE COME FUNZIONANO I CMP PER I FLOATING POINT
+		case FCMPS :
 			return new Instruction(mnemonic, decodeRRArgs(args), lineNumber, ControlUnitConfiguration.RR_FLAGS);
 		case FCMPD :
 			return new Instruction(mnemonic, decodeRRArgs(args), lineNumber, ControlUnitConfiguration.RR_FLAGS);
@@ -236,7 +236,7 @@ public class Decoder {
 		int[] operands = new int[3];
 		operands[0] = decodeRegister("XZR");
 		operands[1] = decodeRegister(args.get(0));
-		operands[2] = decodeArithmeticImmediate(args.get(0));
+		operands[2] = decodeArithmeticImmediate(args.get(1));
 		return operands;
 	}
 	
