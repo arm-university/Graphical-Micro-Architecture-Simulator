@@ -64,7 +64,7 @@ public class WebApp implements EntryPoint {
 		// resize the GUI when the browser window size changes
 		Window.addResizeHandler(new ResizeHandler() {
 			@Override
-			public void onResize(ResizeEvent event) {
+			public void onResize(ResizeEvent event) {/*
 				int editorHeight;
 				if (executionModes.getSelectedItemText().equals(SIMULATION)) {
 					editorHeight = Window.getClientHeight()-controlPanel.getOffsetHeight()
@@ -85,7 +85,7 @@ public class WebApp implements EntryPoint {
 				if (pDatapath != null) {
 					double width = event.getWidth();
 					resizePipelineDatapath(width);
-				}
+				}*/
 			}
 			
 			private void resizeSingleCycleDatapath(double width) {
@@ -169,7 +169,7 @@ public class WebApp implements EntryPoint {
 				return null;
 			}
 		}).withBindKey("Ctrl+-|Ctrl-_"));
-		editor.addCommand(new AceCommandDescription("resetFontSize", 
+		editor.addCommand(new AceCommandDescription("resetFontSize",
 				new AceCommandDescription.ExecAction() {
 			@Override
 			public Object exec(AceEditor editor) {
@@ -215,11 +215,11 @@ public class WebApp implements EntryPoint {
 		pDatapath = null;
 		buildVisualisationUI();
 		double width = Window.getClientWidth();
-		if (width > 1700) {
+		/*if (width > 1700) {
 			editor.setWidth("675px");
 		} else {
 			editor.setWidth(registerPanel.getOffsetWidth() + "px");
-		}
+		}*/
 		double datapathWidth = width-editorPanel.getOffsetWidth()-HORIZONTAL_PADDING;
 		scDatapath = new SingleCycleVis(datapathWidth, datapathWidth/ASPECT_RATIO);
 		datapathPanel.add(scDatapath.getCanvas());
@@ -232,11 +232,11 @@ public class WebApp implements EntryPoint {
 		scDatapath = null;
 		buildVisualisationUI();
 		double width = Window.getClientWidth();
-		if (width > 1700) {
+		/*if (width > 1700) {
 			editor.setWidth("675px");
 		} else {
 			editor.setWidth(registerPanel.getOffsetWidth() + "px");
-		}
+		}*/
 		double datapathWidth = width-editorPanel.getOffsetWidth()-HORIZONTAL_PADDING;
 		pDatapath = new PipelineVis(datapathWidth, datapathWidth/ASPECT_RATIO);
 		datapathPanel.add(debugPanel);
@@ -670,8 +670,8 @@ public class WebApp implements EntryPoint {
 	private void initRegisterPanel() {
 		
 		HorizontalPanel regFile = new HorizontalPanel();
-		//regFile.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
-		//regFile.setWidth("100%");
+		regFile.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		regFile.setWidth("100%");
 		
 		VerticalPanel leftXRegPanel = new VerticalPanel();
 		VerticalPanel rightXRegPanel = new VerticalPanel();
@@ -1019,7 +1019,6 @@ public class WebApp implements EntryPoint {
 	private Button executeButt;
 	private Button assembleButt;
 	private Button helpButt;
-	//private RegisterPanel[] regPanels = new RegisterPanel[32];
 	private RegisterPanel[] XRegPanels = new RegisterPanel[32];
 	private RegisterPanel[] DRegPanels = new RegisterPanel[32];
 	private RegisterPanel[] SRegPanels = new RegisterPanel[32];
