@@ -248,6 +248,7 @@ public class WebApp implements EntryPoint {
 	
 	// builds the GUI for the help page
 		private void buildHelpPage() {
+		page.remove(debugPanel);
 			page.add(controlPanel);
 			if (contentPanel != null) page.remove(contentPanel);
 			contentPanel = new VerticalPanel();
