@@ -854,7 +854,7 @@ public class WebApp implements EntryPoint {
         }
     }
 
-    // starts a new PipleineSimulator object
+    // starts a new PipelineSimulator object
     private void launchPipelineSim() {
         editor.clearAnnotations();
         splitIntoLines(editor.getText());
@@ -867,6 +867,7 @@ public class WebApp implements EntryPoint {
         editor.removeAllMarkers();
         updateRegisterLabels(pipelineSim);
         updateFlagLabels(pipelineSim);
+        updateStackLabels(pipelineSim);
         compileErrors = pipelineSim.getCompileErrorMsgs();
         if (compileErrors.size() != 0) {
             executeButt.setEnabled(false);
@@ -939,6 +940,7 @@ public class WebApp implements EntryPoint {
         }
         cpuLog.setText(pipelineSim.getPipelineLog());
         updateRegisterLabels(pipelineSim);
+        updateStackLabels(pipelineSim);
         updateFlagLabels(pipelineSim);
         runtimeError = pipelineSim.getRuntimeErrorMsg();
         if (runtimeError != null) {
