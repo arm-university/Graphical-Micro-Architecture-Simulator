@@ -151,7 +151,8 @@ public class SingleCycleVis {
             case SMNEMONIC_RM:
             case DMNEMONIC_RM:
             case XMNEMONIC_RM:
-                if (m.equals(Mnemonic.STUR) || m.equals(Mnemonic.STURW) || m.equals(Mnemonic.STURH) || m.equals(Mnemonic.STURB)) {
+                if (m.equals(Mnemonic.STUR) || m.equals(Mnemonic.STURW) || m.equals(Mnemonic.STURH) || m.equals(Mnemonic.STURB)
+                        || (m.equals(Mnemonic.STURS) || m.equals(Mnemonic.STURD))) {
                     drawDatapathStore(m);
                     drawInstructionTextRM(ins);
                 } else {
