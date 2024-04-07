@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-    <groupId>com.arm.legv8simulator</groupId>
-    <artifactId>Graphical-Micro-Architecture-Simulator</artifactId>
-    <version>1.0-BETA</version>
-</parent>		
-	
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.arm.legv8simulator</groupId>
+        <artifactId>Graphical-Micro-Architecture-Simulator</artifactId>
+        <version>1.0-BETA</version>
+    </parent>
+
 
     <artifactId>LEGv8_Simulator</artifactId>
     <packaging>gwt-app</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <JavaVersion>11</JavaVersion>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -48,6 +49,7 @@
                 <groupId>net.ltgt.gwt.maven</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
                 <inherited>false</inherited>
+                <version>1.1.0</version>
                 <configuration>
                     <launcherDir>${project.build.directory}/LEGv8_Simulator/gwt/launcherDir</launcherDir>
                     <!-- To be able to use gwt:devmode (useful on Windows where Ctrl+C won't kill gwt:codeserver)-->
@@ -62,9 +64,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
                 <configuration>
-                    <source>8</source>
-                    <target>8</target>
+                    <source>${JavaVersion}</source>
+                    <target>${JavaVersion}</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -73,15 +76,10 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.12.1</version>
-                    <configuration>
-                        <release>8</release>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.3.1</version>
                     <executions>
                         <execution>
                             <!-- Allows for the copy of the contents of the web-resources folder into the target folder
@@ -93,7 +91,8 @@
                                 <goal>copy-resources</goal>
                             </goals>
                             <configuration>
-                                <outputDirectory>${project.build.directory}/LEGv8_Simulator-${project.version}</outputDirectory>
+                                <outputDirectory>${project.build.directory}/LEGv8_Simulator-${project.version}
+                                </outputDirectory>
                                 <resources>
                                     <resource>
                                         <directory>src/main/web-resources</directory>
@@ -106,22 +105,19 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.2.5</version>
                 </plugin>
                 <plugin>
                     <groupId>net.ltgt.gwt.maven</groupId>
                     <artifactId>gwt-maven-plugin</artifactId>
-                    <version>1.1.0</version>
                     <extensions>true</extensions>
                     <configuration>
-                        <sourceLevel>11</sourceLevel>
+                        <sourceLevel>${JavaVersion}</sourceLevel>
                         <failOnError>true</failOnError>
                     </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>3.3.0</version>
                     <executions>
                         <execution>
                             <id>attach-sources</id>
