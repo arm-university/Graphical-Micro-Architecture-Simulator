@@ -2,6 +2,7 @@ package com.arm.legv8simulator.client.executionmodes;
 
 import java.util.ArrayList;
 
+import com.arm.legv8simulator.client.Error;
 import com.arm.legv8simulator.client.cpu.CPU;
 import com.arm.legv8simulator.client.cpu.CPUSnapshot;
 import com.arm.legv8simulator.client.cpu.ControlUnitConfiguration;
@@ -11,6 +12,7 @@ import com.arm.legv8simulator.client.instruction.Mnemonic;
 import com.arm.legv8simulator.client.instruction.PipelineInstruction;
 import com.arm.legv8simulator.client.lexer.TextLine;
 import com.arm.legv8simulator.client.lexer.TokenType;
+import com.arm.legv8simulator.client.parser.UnsupportedInstructionException;
 
 /**
  * The simulator used for the pipelined execution mode
@@ -112,12 +114,30 @@ public class PipelinedSimulator extends LEGv8_Simulator {
 		visibleState = new CPUSnapshot(cpu);
 	}
 
+	@Override
+	public void parseCode() {
+		for (int i=0; i<code.size(); i++) {
+			if (!code.get(i).getLine().isEmpty()) {
+				code.get(i).tokenize();
+				if (code.get(i).getNumTokens()>0) { // Why would there be an error message is the number of tokens is greater than 0?
+					String errorMsg = code.get(i).parse();
+					if (errorMsg != null) {
+						compileErrors.add(new Error(errorMsg, i));
+					}
+				}
+			}
+			if (code.get(i).getMnemonic().nameUpper.contains("F")){
+				compileErrors.add(new Error("Floating point operations are not currently supported in pipelined mode.",i));
+			}
+		}
+	}
+
 	/**
 	 * Clocks the pipeline
 	 */
 	public void clock() {
 		if (cpu.getInstructionIndex() == cpuInstructions.size()) {
-			// if no more new instructions to insert into pipeline execute those left in pipeline; or if empty, do nothing
+			// if there are no new instructions to insert into pipeline execute those left in pipeline; if empty, do nothing
 			pipelineLog.append("We are at the last instruction \n");
 			currentLineNumber = cpuInstructions.get(cpuInstructions.size()-1).getLineNumber();
 			if (!isPipelineEmpty()) {
@@ -127,11 +147,11 @@ public class PipelinedSimulator extends LEGv8_Simulator {
 				} else {
 					pipelineLog.append("Moving the pipeline along \n");
 					// insert bubble at IF position - no more instructions to insert
-					updatePipeline(null);
+					insertBubble(0);
 				}
 			} else 	pipelineLog.append("Execution has ended \n");
 		} else {
-			// come here if still new instructions to enter pipeline
+			// come here if new instructions to enter pipeline
 			if (dataHazardStallRequired()) {
 				insertBubble(2);
 			} 
@@ -142,6 +162,9 @@ public class PipelinedSimulator extends LEGv8_Simulator {
 				} else {
 					long currentPC = cpu.getPC();
 					Instruction currentInstruction = cpuInstructions.get(cpu.getInstructionIndex());
+					if (currentInstruction.getMnemonic().nameUpper.contains("F")){
+
+                    }
 					// keep track of next instruction incase needed as branch delay instruction
 					if (cpu.getInstructionIndex()+1 < cpuInstructions.size()) {
 						nextInstruction = cpuInstructions.get(cpu.getInstructionIndex()+1);
