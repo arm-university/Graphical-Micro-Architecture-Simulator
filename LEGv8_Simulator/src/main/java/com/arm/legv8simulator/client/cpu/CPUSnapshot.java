@@ -33,7 +33,7 @@ public class CPUSnapshot {
 		switch(type) {
 		case X: return XRegisterFile[index];
 		case D: return DRegisterFile[index];
-		case S: return DRegisterFile[index] & 0x0000ffff;
+		case S: return DRegisterFile[index] & 0x00000000ffffffffL;
 		}
 		return 0l;
 	}
