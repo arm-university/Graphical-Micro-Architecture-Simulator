@@ -44,8 +44,8 @@ The folder containing the simulator will appear under `LEGv8_Simulator/target/` 
 Clone the repository to a folder of your choosing, make your changes to the files and run the `mvn package` command inside the `LEGv8_Simulator` folder.
  The folder containing the simulator will appear under `LEGv8_Simulator/target/`.
 
-**GWT only implements a subset of the Java 8 JRE, this means you need to limit your syntax to this version and not every
-feature might be usable.**
+**GWT only implements a subset of the Java 11 JRE, this means you need to limit your syntax to this version and not every
+feature might be usable. Always keep an eye on the latest release notes from GWT for updates.**
 
 **Note: This tool is currently a BETA version.**
 
