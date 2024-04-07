@@ -115,7 +115,7 @@ public class PipelinedSimulator extends LEGv8_Simulator {
 	}
 
 	@Override
-	public void parseCode() {
+	public void parseCode() { // once the pipelined simulator is made to work with floating point operations this method should be deleted
 		for (int i=0; i<code.size(); i++) {
 			if (!code.get(i).getLine().isEmpty()) {
 				code.get(i).tokenize();
@@ -162,9 +162,6 @@ public class PipelinedSimulator extends LEGv8_Simulator {
 				} else {
 					long currentPC = cpu.getPC();
 					Instruction currentInstruction = cpuInstructions.get(cpu.getInstructionIndex());
-					if (currentInstruction.getMnemonic().nameUpper.contains("F")){
-
-                    }
 					// keep track of next instruction incase needed as branch delay instruction
 					if (cpu.getInstructionIndex()+1 < cpuInstructions.size()) {
 						nextInstruction = cpuInstructions.get(cpu.getInstructionIndex()+1);
