@@ -237,9 +237,10 @@ public class WebApp implements EntryPoint {
 		} else {
 			editor.setWidth(registerPanel.getOffsetWidth() + "px");
 		}*/
+
         double datapathWidth = width - editorPanel.getOffsetWidth() - HORIZONTAL_PADDING;
         pDatapath = new PipelineVis(datapathWidth, datapathWidth / ASPECT_RATIO);
-        datapathPanel.add(debugPanel);
+        //datapathPanel.add(debugPanel);
         datapathPanel.add(pDatapath.getCanvas());
         contentPanel.add(datapathPanel);
         //debugPanel.add(datapathPanel);
@@ -462,10 +463,13 @@ public class WebApp implements EntryPoint {
         contentPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         contentPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
         page.add(contentPanel);
-        HorizontalPanel editorAndStackPanel = new HorizontalPanel();
+        editorAndStackPanel = new HorizontalPanel();
         editorAndStackPanel.add(editorPanel);
         editorPanel.setSize("100%", "100%");
         editorAndStackPanel.add(stackPanel);
+        if(currentExMode.equals(PIPELINE_VISUAL)){
+            editorAndStackPanel.add(debugPanel);
+        }
         resetStackPanel();
         contentPanel.add(editorAndStackPanel);
         contentPanel.add(registerPanel);
@@ -979,6 +983,8 @@ public class WebApp implements EntryPoint {
     private VerticalPanel contentPanel;
     private VerticalPanel editorPanel;
     private HorizontalPanel registerPanel;
+
+    private HorizontalPanel editorAndStackPanel;
     private VerticalPanel stackPanel;
     private VerticalPanel leftContentPanel;
     private VerticalPanel rightContentPanel;
