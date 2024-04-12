@@ -3,18 +3,6 @@
 
 The Graphical Micro-Architecture Simulator is a web browser-based simulator for a subset of the Arm instructions. Specifically, this tool provides the expected execution results for the LEGv8 instructions, which is a subset of Arm®v8-A instructions based on the [Computer Organization and Design (Arm Edition)](https://www.elsevier.com/books/computer-organization-and-design-arm-edition/patterson/978-0-12-801733-3) textbook by David A. Patterson & John L. Hennessy. This simulator can be run locally on a PC, and is offered exclusively and at no cost to academics, teaching staff, and learners worldwide.
 
-### You can try online the forked simulator [HERE](https://simdeistud.github.io/LEGv8-Simulator/).
-
-## What has been added to this forked version
-
-* **Integrated all the instructions of the LEGv8 ISA**, including the floating point operations.
-* Fixed all the major bugs that impeded the correct execution of code. Corrected stack base to be quadword aligned.
-* Integrated the project with Maven in order to make importing, configuration and development effortless.
-* Added a visualization for the stack and for the floating point registers. Reorganized the UI to best fit the new additions.
-* The project and the AceGWT library have been updated to use GWT 2.11.0
-
-This effort has been made as a Computer Engineering bachelor's thesis in the context of the **_Digital Systems Architectures_** course held at the **_Department of Engineering and Architecture_** at the **_[University of Trieste](https://www.units.it/en)_** under the guidance of _**Prof. Alberto Carini**_ .
-
 ## How to develop and package the project
 
 ### IntelliJ IDEA
